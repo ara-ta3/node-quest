@@ -1,11 +1,16 @@
-module.exports = function(maxHp) {
-    var currentHp = maxHp;
-    this.getMaxHP = function () {
-        return maxHp;
-    };
+class Status {
+    constructor(currentHp, maxHp) {
+        this.currentHp = currentHp;
+        this.maxHp = maxHp;
+    }
 
-    this.toString = function () {
+    getMaxHP() {
+        return this.maxHp;
+    }
+
+    toString() {
         return "current HP: " + currentHp + " / " + maxHp;
-    };
+    }
+}
 
-};
+module.exports = Status;
