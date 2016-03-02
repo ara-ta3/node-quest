@@ -1,27 +1,27 @@
-var User = function(id, name, status, role) {
-    this.getId      = function () { return id;};
-    this.getName    = function () { return name;};
-    this.getStatus  = function () { return status;};
-    this.getRole    = function () { return role;};
+let Status = require(__dirname + "/status.js");
 
-    this.attack = function(target, damange) {
-        target.damaged(damage)
+class User {
+    constructor(id, name, status, role) {
+        this.id = id;
+        this.name = name;
+        this.status = status;
+        this.role = role;
     };
 
-    this.damaged = function(x) {
-        currentHp = status.hp;
+    attack(target, damage) {
+        return target.damaged(damage);
+    };
+
+    damaged(x) {
+        let currentHp = this.status.currentHp;
         currentHp -= x;
-        status.hp = currentHp;
-        return status;
-    }
-
-    this.status = function() {
-        return status.toString();
+        this.status = new Status(currentHp, this.status.maxHp);
+        return this.status;
     };
 
-    this.factory = function(id, name, status) {
+    static factory(id, name, status) {
         return new User(id, name, status, null);
     };
-};
+}
 
 module.exports = User;
