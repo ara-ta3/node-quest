@@ -22,5 +22,10 @@
   "bugs": {
     "url": "https://github.com/ara-ta3/game-plugin/issues"
   },
-  "homepage": "https://github.com/ara-ta3/game-plugin#readme"
+  "homepage": "https://github.com/ara-ta3/game-plugin#readme",
+  "files": [
+      "README.md",
+      "package.json",
+      "lib"
+  ]
 }
