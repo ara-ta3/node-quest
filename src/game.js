@@ -5,6 +5,7 @@ class Game {
     // TODO management of attack point
     constructor(users, maxHp) {
         this.users = users;
+        this.maxHp = maxHp;
     };
 
     findUser(name) {
