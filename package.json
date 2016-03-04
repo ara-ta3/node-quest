@@ -2,7 +2,7 @@
   "name": "game-plugin",
   "version": "1.0.0",
   "description": "",
-  "main": "bundle.js",
+  "main": "lib/game.js",
   "dependencies": {},
   "devDependencies": {
     "babel-cli": "^6.6.0",

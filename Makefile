@@ -2,4 +2,5 @@ install:
 	npm install
 
 build:
-	./node_modules/.bin/browserify ./main.es6 -o ./main.js -t [ babelify --presets es2015 ]
+	./node_modules/.bin/babel src --out-dir lib --source-maps-inline
+
