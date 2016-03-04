@@ -13,17 +13,17 @@ class User {
     };
 
     cure(target, point) {
-        if (sameAs(target)) {
-            point /= 10;
+        if (this.sameAs(target)) {
+            point = parseInt(point) / 10;
         };
         return target.cured(point);
     };
 
     fullCare(target) {
-        if (sameAs(target)) {
+        if (this.sameAs(target)) {
             return null;
         } else {
-            return target.cured(Status.maxHp);
+            return target.cured(this.status.maxHp);
         }
     };
 
@@ -42,7 +42,7 @@ class User {
     cured(x) {
         let currentHp = this.status.currentHp;
         currentHp += x;
-        currentHp = Math.min(currentHp, Status.maxHp);
+        currentHp = Math.min(currentHp, this.status.maxHp);
         this.status = new Status(currentHp, this.status.maxHp);
         return this.status;
     };

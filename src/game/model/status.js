@@ -5,7 +5,7 @@ class Status {
     };
 
     toString() {
-        return "current HP: " + currentHp + " / " + maxHp;
+        return `current HP: ${this.currentHp} / ${this.maxHp}`;
     };
 
     isDead() {
