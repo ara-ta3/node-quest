@@ -11,7 +11,11 @@ class Game {
     findUser(name) {
         let targets = this.users.filter((u) => u.name === name);
         return targets.length === 0 ? null : targets.pop();
-    }
+    };
+
+    static defaultStatus() {
+        return new Status(this.maxHp, this.maxHp);
+    };
 }
 
 module.exports = {
