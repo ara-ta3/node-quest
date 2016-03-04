@@ -13,8 +13,6 @@ class UserRepositoryOnHubotBrain {
     findAll() {
         return brain.get(KEY_FOR_HUBOT_BRAIN);
     }
-
-
 }
 
 module.exports = UserRepositoryOnHubotBrain;
