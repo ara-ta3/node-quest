@@ -25,6 +25,7 @@
   "homepage": "https://github.com/ara-ta3/game-plugin#readme",
   "files": [
       "README.md",
+      "LICENCE",
       "package.json",
       "lib"
   ]
