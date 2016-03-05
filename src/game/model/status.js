@@ -7,10 +7,6 @@ class Status {
         Object.freeze(this);
     };
 
-    toString() {
-        return `current HP: ${this.currentHp} / ${this.maxHp}`;
-    };
-
     isDead() {
         return this.currentHp <= this.game.minHp;
     };
