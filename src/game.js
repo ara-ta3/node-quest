@@ -42,5 +42,6 @@ module.exports = {
     User: User,
     Status: Status,
     Equipment: Equipment,
-    Weapon: Weapon
+    Weapon: Weapon,
+    Parameter: Parameter
 }
