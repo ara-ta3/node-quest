@@ -28,7 +28,7 @@ class Game {
     };
 
     createUser(id, name) {
-        return new User(id, name, this.defaultStatus(), null, this.defaultEquipment());
+        return new User(id, name, this.defaultStatus(), this.defaultEquipment());
     };
 }
 
