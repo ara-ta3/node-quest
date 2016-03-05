@@ -1,6 +1,6 @@
-let assert = require('power-assert');
-let Status = require(`${__dirname}/../../../src/game/model/status.js`);
-let Game = require(`${__dirname}/../../../src/game.js`).Game;
+const assert = require('power-assert');
+const Status = require(`${__dirname}/../../../src/game/model/status.js`);
+const Game = require(`${__dirname}/../../../src/game.js`).Game;
 
 describe("Status", () => {
     describe("isDead", () => {

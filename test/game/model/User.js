@@ -1,7 +1,7 @@
-let assert = require('power-assert');
-let User = require(`${__dirname}/../../../src/game/model/user.js`);
-let Status = require(`${__dirname}/../../../src/game/model/status.js`);
-let Game = require(`${__dirname}/../../../src/game.js`).Game;
+const assert = require('power-assert');
+const User = require(`${__dirname}/../../../src/game/model/user.js`);
+const Status = require(`${__dirname}/../../../src/game/model/status.js`);
+const Game = require(`${__dirname}/../../../src/game.js`).Game;
 
 describe("User", () => {
     describe("attack", () => {
