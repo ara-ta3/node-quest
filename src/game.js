@@ -2,7 +2,6 @@ let User = require(`${__dirname}/game/model/user.js`);
 let Status = require(`${__dirname}/game/model/status.js`);
 
 class Game {
-    // TODO management of attack point
     constructor(minHp, maxHp) {
         this.users = [];
         this.minHp = minHp;
