@@ -1,6 +1,6 @@
 {
-  "name": "game-plugin",
-  "version": "1.0.2",
+  "name": "node-quest",
+  "version": "0.0.1",
   "description": "",
   "main": "lib/game.js",
   "dependencies": {},
@@ -19,14 +19,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/ara-ta3/game-plugin.git"
+    "url": "git+ssh://git@github.com/ara-ta3/node-quest.git"
   },
   "author": "Arata Tanaka",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ara-ta3/game-plugin/issues"
+    "url": "https://github.com/ara-ta3/node-quest/issues"
   },
-  "homepage": "https://github.com/ara-ta3/game-plugin#readme",
+  "homepage": "https://github.com/ara-ta3/node-quest#readme",
   "files": [
     "README.md",
     "LICENCE",
