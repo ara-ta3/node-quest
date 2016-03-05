@@ -1,14 +1,20 @@
-let Status = require(__dirname + "/status.js");
+const Status = require(__dirname + "/status.js");
+const Point  = require(__dirname + "/Point.js");
 
 class User {
-    constructor(id, name, status, role) {
+    constructor(id, name, status, role, equipment) {
         this.id = id;
         this.name = name;
         this.status = status;
         this.role = role;
+        this.equipment = equipment;
     };
 
-    attack(target, damage) {
+    attack(target) {
+        let damage = new Point(
+                this.equipment.weapon.averageOfAttack,
+                this.equipment.weapon.divergenceOfAttack
+                ).toInt();
         return target.damaged(damage);
     };
 
@@ -42,9 +48,6 @@ class User {
         return `Name: ${this.name}, Status: ${this.status.toString()}`;
     };
 
-    static factory(id, name, status) {
-        return new User(id, name, status, null);
-    };
 }
 
 module.exports = User;

@@ -1,5 +1,7 @@
 let User = require(`${__dirname}/game/model/user.js`);
 let Status = require(`${__dirname}/game/model/status.js`);
+let Equipment = require(`${__dirname}/game/model/Equipment.js`);
+let Weapon = require(`${__dirname}/game/model/Weapon.js`);
 
 class Game {
     constructor(minHp, maxHp) {
@@ -18,12 +20,22 @@ class Game {
     };
 
     defaultStatus() {
-        return new Status(this.maxHp, this.maxHp);
+        return new Status(this, this.maxHp);
+    };
+
+    defaultEquipment() {
+        return new Equipment(new Weapon(this.maxHp / 100, this.maxHp / 1000));
+    };
+
+    createUser(id, name) {
+        return new User(id, name, this.defaultStatus(), null, this.defaultEquipment());
     };
 }
 
 module.exports = {
     Game: Game,
     User: User,
-    Status: Status
+    Status: Status,
+    Equipment: Equipment,
+    Weapon: Weapon
 }
