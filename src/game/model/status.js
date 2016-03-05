@@ -1,7 +1,10 @@
 class Status {
-    constructor(currentHp, maxHp) {
+    constructor(game, currentHp) {
+        currentHp = Math.min(currentHp, game.maxHp);
+        currentHp = Math.max(currentHp, game.minHp);
         this.currentHp = currentHp;
-        this.maxHp = maxHp;
+        this.game = game;
+        Object.freeze(this);
     };
 
     toString() {
@@ -9,7 +12,7 @@ class Status {
     };
 
     isDead() {
-        return this.currentHp <= 0;
+        return this.currentHp <= this.game.minHp;
     };
 }
 

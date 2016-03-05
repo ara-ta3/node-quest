@@ -13,18 +13,11 @@ class User {
     };
 
     cure(target, point) {
-        if (this.sameAs(target)) {
-            point = parseInt(point) / 10;
-        };
         return target.cured(point);
     };
 
     fullCare(target) {
-        if (this.sameAs(target)) {
-            return null;
-        } else {
-            return target.cured(this.status.maxHp);
-        }
+        return target.cured(Infinity);
     };
 
     sameAs(target) {
@@ -32,18 +25,12 @@ class User {
     };
 
     damaged(x) {
-        let currentHp = this.status.currentHp;
-        currentHp -= x;
-        currentHp = Math.max(currentHp, 0);
-        this.status = new Status(currentHp, this.status.maxHp);
+        this.status = new Status(this.status.game, this.status.currentHp - x);
         return this.status;
     };
 
     cured(x) {
-        let currentHp = this.status.currentHp;
-        currentHp += x;
-        currentHp = Math.min(currentHp, this.status.maxHp);
-        this.status = new Status(currentHp, this.status.maxHp);
+        this.status = new Status(this.status.game, this.status.currentHp + x);
         return this.status;
     };
 
