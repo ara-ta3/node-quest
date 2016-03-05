@@ -1,3 +1,5 @@
+.PHONY: test
+
 install:
 	npm install
 
@@ -6,3 +8,10 @@ build:
 
 publish: build
 	npm publish
+
+test:
+	./node_modules/.bin/mocha --compilers js:babel-register  --recursive ./test/ --use_strict
+
+watch-test:
+	./node_modules/.bin/mocha --compilers js:babel-register  --recursive ./test/ --use_strict --watch
+
