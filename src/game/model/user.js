@@ -2,11 +2,10 @@ const Status = require(__dirname + "/status.js");
 const Point  = require(__dirname + "/Point.js");
 
 class User {
-    constructor(id, name, status, role, equipment) {
+    constructor(id, name, status, equipment) {
         this.id = id;
         this.name = name;
         this.status = status;
-        this.role = role;
         this.equipment = equipment;
     };
 
