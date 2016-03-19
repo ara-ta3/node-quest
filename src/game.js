@@ -3,9 +3,11 @@ const Status    = require(`${__dirname}/game/model/status.js`);
 const Equipment = require(`${__dirname}/game/model/Equipment.js`);
 const Weapon    = require(`${__dirname}/game/model/Weapon.js`);
 const Parameter = require(`${__dirname}/game/model/Parameter.js`);
+const EventEmitter = require('eventemitter2').EventEmitter2;
 
-class Game {
+class Game extends EventEmitter {
     constructor(minHp, maxHp) {
+        super();
         this.users = [];
         this.minHp = minHp;
         this.maxHp = maxHp;
@@ -13,6 +15,14 @@ class Game {
 
     setUsers(users) {
         this.users = users;
+        this.users.forEach((u) => {
+            u.on("hp-changed", (data) => {
+                this.emit("user-hp-changed", {
+                    target: u,
+                    value: data.value
+                })
+            })
+        })
     }
 
     findUser(name) {
