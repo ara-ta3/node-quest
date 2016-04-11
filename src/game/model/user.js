@@ -61,7 +61,7 @@ class User extends EventEmitter{
     };
 
     damaged(x) {
-        this.status = new Status(this.status.game, this.status.currentHp - x);
+        this.status = new Status(this.status.game, this.status.currentHp - x, this.status.maxHp);
         this.emit("hp-changed", {
             value: x
         })
@@ -69,7 +69,7 @@ class User extends EventEmitter{
     };
 
     cured(x) {
-        this.status = new Status(this.status.game, this.status.currentHp + x);
+        this.status = new Status(this.status.game, this.status.currentHp + x, this.status.maxHp);
         this.emit("hp-changed", {
             value: x
         })

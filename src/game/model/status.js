@@ -1,8 +1,9 @@
 class Status {
-    constructor(game, currentHp) {
-        currentHp = Math.min(currentHp, game.maxHp);
+    constructor(game, currentHp, maxHp) {
+        currentHp = Math.min(currentHp, game.maxHp, maxHp);
         currentHp = Math.max(currentHp, game.minHp);
         this.currentHp = currentHp;
+        this.maxHp = maxHp;
         this.game = game;
         Object.freeze(this);
     };
