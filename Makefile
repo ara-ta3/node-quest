@@ -6,7 +6,7 @@ install:
 build: install
 	npm run build
 
-publish: build
+publish: install build
 	npm publish
 
 test: install
@@ -15,8 +15,8 @@ test: install
 watch-test: install
 	./node_modules/.bin/mocha --compilers js:babel-register  --recursive ./test/ --use_strict --watch
 
-version-up-minor:
+version-up-minor: 
 	git status -s |wc -l|xargs -n 1 test 0 -eq
-	npm run build
+	git br |grep '* master'
 	npm version minor
-#     npm publish
+	$(MAKE) publish
