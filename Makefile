@@ -12,6 +12,9 @@ publish: install build
 test: install
 	npm run test
 
+test-watch: install
+	npm run test-watch
+
 watch-test: install
 	./node_modules/.bin/mocha --compilers js:babel-register  --recursive ./test/ --use_strict --watch
 
