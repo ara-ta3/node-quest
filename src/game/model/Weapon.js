@@ -1,7 +1,8 @@
 class Weapon {
-    constructor(averageOfAttack, divergenceOfAttack) {
+    constructor(averageOfAttack, divergenceOfAttack, hitRate) {
         this.averageOfAttack = averageOfAttack;
         this.divergenceOfAttack = divergenceOfAttack;
+        this.hitRate = hitRate;
     }
 }
 
