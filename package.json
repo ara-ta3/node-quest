@@ -1,6 +1,6 @@
 {
   "name": "node-quest",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "",
   "main": "lib/game.js",
   "dependencies": {
@@ -17,6 +17,7 @@
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha --compilers js:babel-register  --recursive ./test/ --use_strict",
+    "test-watch": "./node_modules/.bin/mocha --compilers js:babel-register  --recursive ./test/ --use_strict --watch",
     "build": "./node_modules/.bin/babel src --out-dir lib --source-maps-inline --presets es2015"
   },
   "repository": {
