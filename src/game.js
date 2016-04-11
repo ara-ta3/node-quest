@@ -32,7 +32,7 @@ class Game extends EventEmitter {
     };
 
     defaultStatus() {
-        return new Status(this, this.maxHp);
+        return new Status(this, this.maxHp, this.maxHp);
     };
 
     defaultEquipment() {
