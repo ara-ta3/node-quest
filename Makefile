@@ -3,15 +3,20 @@
 install:
 	npm install
 
-build:
-	./node_modules/.bin/babel src --out-dir lib --source-maps-inline --presets es2015
+build: install
+	npm run build
 
-publish: build
+publish: install build
 	npm publish
 
-test:
-	./node_modules/.bin/mocha --compilers js:babel-register  --recursive ./test/ --use_strict
+test: install
+	npm run test
 
-watch-test:
+watch-test: install
 	./node_modules/.bin/mocha --compilers js:babel-register  --recursive ./test/ --use_strict --watch
 
+version-up-minor: 
+	git status -s |wc -l|xargs -n 1 test 0 -eq
+	git br |grep '* master'
+	npm version minor
+	$(MAKE) publish

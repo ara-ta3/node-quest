@@ -17,15 +17,19 @@ class User extends EventEmitter{
             damage + this.equipment.weapon.averageOfAttack,
             this.equipment.weapon.divergenceOfAttack
         ).toInt();
+        const hit = this.equipment.weapon.hitRate.hit();
+        damage = hit ? damage : 0;
         this.emit("attack", {
             target: target,
-            value: damage
+            value: damage,
+            hit: hit
         })
-        let status =  target.damaged(damage);
-        target.emit("damaged", {
+        const status =  hit ? target.damaged(damage) : target.status;
+        hit && target.emit("damaged", {
             actor: this,
             target: target,
-            value: damage
+            value: damage,
+            hit: hit
         });
         return status;
     };

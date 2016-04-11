@@ -3,6 +3,7 @@ const Status    = require(`${__dirname}/game/model/status.js`);
 const Equipment = require(`${__dirname}/game/model/Equipment.js`);
 const Weapon    = require(`${__dirname}/game/model/Weapon.js`);
 const Parameter = require(`${__dirname}/game/model/Parameter.js`);
+const HitRate   = require(`${__dirname}/game/model/HitRate.js`);
 const EventEmitter = require('eventemitter2').EventEmitter2;
 
 class Game extends EventEmitter {
@@ -35,7 +36,7 @@ class Game extends EventEmitter {
     };
 
     defaultEquipment() {
-        return new Equipment(new Weapon(this.maxHp / 200, this.maxHp / 1000));
+        return new Equipment(new Weapon(this.maxHp / 200, this.maxHp / 1000), new HitRate(90));
     };
 
     defaultParameter() {
