@@ -7,11 +7,12 @@ const HitRate   = require(`${__dirname}/game/model/HitRate.js`);
 const EventEmitter = require('eventemitter2').EventEmitter2;
 
 class Game extends EventEmitter {
-    constructor(minHp, maxHp) {
+    constructor(minHp, maxHp, maxMp) {
         super();
         this.users = [];
         this.minHp = minHp;
         this.maxHp = maxHp;
+        this.maxMp = maxMp;
     };
 
     setUsers(users) {
@@ -32,7 +33,7 @@ class Game extends EventEmitter {
     };
 
     defaultStatus() {
-        return new Status(this, this.maxHp, this.maxHp);
+        return new Status(this, this.maxHp, this.maxHp, this.maxMp, this.maxMp);
     };
 
     defaultEquipment() {
@@ -54,5 +55,6 @@ module.exports = {
     Status: Status,
     Equipment: Equipment,
     Weapon: Weapon,
-    Parameter: Parameter
+    Parameter: Parameter,
+    HitRate: HitRate
 }
