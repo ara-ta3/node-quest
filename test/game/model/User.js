@@ -6,6 +6,9 @@ const Equipment = require(`${__dirname}/../../../src/game/model/Equipment.js`);
 const Weapon = require(`${__dirname}/../../../src/game/model/Weapon.js`);
 const Parameter = require(`${__dirname}/../../../src/game/model/Parameter.js`);
 const HitRate   = require(`${__dirname}/../../../src/game/model/HitRate.js`);
+const Spell  = require(`${__dirname}/../../../src/game/model/Spell.js`);
+const Effect = require(`${__dirname}/../../../src/game/model/Effect.js`);
+const AttackEffect = Effect.AttackEffect;
 
 describe("User", () => {
     describe("attack", () => {
@@ -58,6 +61,68 @@ describe("User", () => {
             assert(target.status.currentHp === 10);
         });
 
+    });
+
+    describe("cast", () => {
+        let dummyEquipment = new Equipment(new Weapon(0, 0, new HitRate(100)));
+        let dummyParameter = new Parameter(0, 0);
+
+        it("should decrease target's HP when spell has attack effect", () => {
+            let spell   = new Spell("ファイア", 0, new AttackEffect(10));
+            let game    = new Game(0, 10);
+            let actor   = new User("id1", "A", new Status(game, 10, 10), dummyEquipment, dummyParameter);
+            let target  = new User("id2", "B", new Status(game, 10, 10), dummyEquipment, dummyParameter);
+            actor.learn(spell);
+            actor.cast(spell, [target]);
+            assert.equal(target.status.currentHp, 0);
+        });
+
+        it("should decrease actor's MP when spell is casted", () => {
+            let spell   = new Spell("ファイア", 5, new AttackEffect(10));
+            let game    = new Game();
+            let actor   = new User("id1", "A", new Status(game, 10, 10, 10, 10), dummyEquipment, dummyParameter);
+            let target  = new User("id2", "B", new Status(game, 10, 10), dummyEquipment, dummyParameter);
+            actor.learn(spell);
+            actor.cast(spell, [target]);
+            assert.equal(actor.status.currentMp, 5);
+        });
+
+
+        it("should decrease target's HP more when user has high parameter", () => {
+            let param   = new Parameter(10, 0);
+            let spell   = new Spell("ファイア", 0, new AttackEffect(10));
+            let game    = new Game(0, 100);
+            let actor   = new User("id1", "A", new Status(game, 10, 10), dummyEquipment, param);
+            let target  = new User("id2", "B", new Status(game, 30, 30), dummyEquipment, dummyParameter);
+            actor.learn(spell);
+            actor.cast(spell, [target]);
+            assert.equal(target.status.currentHp, 10);
+        });
+
+        it("should return null when user does not have enough mp", () => {
+            let game    = new Game(0, 1000);
+            let actor   = new User("id1", "A", new Status(game, 10, 10, 0, 10), dummyEquipment, dummyParameter);
+            let target  = new User("id2", "B", new Status(game, 30, 30), dummyEquipment, dummyParameter);
+            let spell   = new Spell("ファイア", 5, new AttackEffect(10));
+            actor.learn(spell);
+            let result  = actor.cast(spell, [target]);
+            assert.equal(result, null);
+            assert.equal(target.status.currentHp, 30);
+        });
+
+        it("should return learned spell when findSpell is called", () => {
+            let spell   = new Spell("ファイア", 0, new AttackEffect(10));
+            let game    = new Game(0, 10);
+            let actor   = new User("id1", "A", new Status(game, 10, 10), dummyEquipment, dummyParameter);
+            actor.learn(spell);
+            assert.equal(actor.findSpell("ファイア"), spell)
+        });
+
+        it("should return null when user does not learn spell", () => {
+            let game    = new Game(0, 10);
+            let actor   = new User("id1", "A", new Status(game, 10, 10), dummyEquipment, dummyParameter);
+            assert.equal(actor.findSpell("ファイア"), null)
+        });
     });
 
     describe("sameAs", () => {

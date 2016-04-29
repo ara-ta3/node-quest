@@ -7,12 +7,13 @@ const HitRate   = require(`${__dirname}/game/model/HitRate.js`);
 const EventEmitter = require('eventemitter2').EventEmitter2;
 
 class Game extends EventEmitter {
-    constructor(minHp, maxHp, maxMp) {
+    constructor(minHp, maxHp, minMp, maxMp) {
         super();
         this.users = [];
-        this.minHp = minHp;
-        this.maxHp = maxHp;
-        this.maxMp = maxMp;
+        this.minHp = isNaN(minHp) ? 0 : minHp;
+        this.minMp = isNaN(minMp) ? 0 : minMp;
+        this.maxHp = isNaN(maxHp) ? Infinity : maxHp;
+        this.maxMp = isNaN(maxMp) ? Infinity : maxMp;
     };
 
     setUsers(users) {

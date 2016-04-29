@@ -59,17 +59,22 @@ class User extends EventEmitter{
     };
 
     cast(spell, targets) {
+        if(!this.status.canCast(spell)) {
+            return null;
+        }
+
         this.emit("cast", {
             targets: targets,
             spell: spell,
         });
         targets.forEach((user) => user.emit("casted", {
             actor: this,
-            target: target,
+            target: user,
             spell: spell
         }));
+        this.status = this.status.changeMp(this.status.currentMp - spell.requiredMp);
         return targets.map(
-            (user) => spell.effect(user)
+            (user) => spell.effectTo(user)
         ).map(
             (effectWithParameter) => effectWithParameter(this.parameter)
         );
@@ -88,7 +93,7 @@ class User extends EventEmitter{
     };
 
     damaged(x) {
-        this.status = new Status(this.status.game, this.status.currentHp - x, this.status.maxHp);
+        this.status = this.status.changeHp(this.status.currentHp - x)
         this.emit("hp-changed", {
             value: x
         })
@@ -96,7 +101,7 @@ class User extends EventEmitter{
     };
 
     cured(x) {
-        this.status = new Status(this.status.game, this.status.currentHp + x, this.status.maxHp);
+        this.status = this.status.changeHp(this.status.currentHp + x)
         this.emit("hp-changed", {
             value: x
         })

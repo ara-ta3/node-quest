@@ -1,10 +1,11 @@
 class Spell {
-    constructor(name, effect) {
+    constructor(name, requiredMp, effect) {
         this.name = name;
+        this.requiredMp = requiredMp;
         this.effect = effect;
     }
 
-    effect(user) {
+    effectTo(user) {
         return this.effect.to(user);
     }
 }
