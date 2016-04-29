@@ -13,11 +13,11 @@ class Status {
     };
 
     changeHp(nextHp) {
-        return new Status(this.game, nextHp, this.maxMp, this.currentMp, this.maxMp);
+        return new Status(this.game, nextHp, this.maxHp, this.currentMp, this.maxMp);
     }
 
     changeMp(nextMp) {
-        return new Status(this.game, this.currentHp, this.maxMp, nextMp, this.maxMp);
+        return new Status(this.game, this.currentHp, this.maxHp, nextMp, this.maxMp);
     }
 
     canCast(spell) {
