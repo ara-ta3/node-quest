@@ -14,50 +14,33 @@ describe("User", () => {
     describe("attack", () => {
         it("should decrease target HP", () => {
             let game    = new Game(0, 10);
-            let equipment = new Equipment(new Weapon(0, 0, new HitRate(100)));
-            let actor   = new User("id1", "A", new Status(game, 10, 10), equipment);
-            let target  = new User("id2", "B", new Status(game, 10, 10), equipment);
-            actor.attack(target, 5);
-            assert(target.status.currentHp === 5);
-        });
-
-        it("should increase attack point with weapon", () => {
-            let game    = new Game(0, 10);
             let equipment = new Equipment(new Weapon(5, 0, new HitRate(100)));
             let actor   = new User("id1", "A", new Status(game, 10, 10), equipment);
             let target  = new User("id2", "B", new Status(game, 10, 10), equipment);
-            actor.attack(target, 5);
-            assert(target.status.currentHp === 0);
+            actor.attack(target);
+            assert(target.status.currentHp === 5);
         });
     });
 
     describe("cure", () => {
         let equipment = new Equipment(new Weapon(0, 0, new HitRate(100)));
-        let dummyParameter = new Parameter(0, 0);
         it("should increase target HP", () => {
+            let parameter = new Parameter(3, 0);
             let game    = new Game(0, 10);
-            let actor   = new User("id1", "A", new Status(game, 10, 10), equipment, dummyParameter);
-            let target  = new User("id2", "B", new Status(game, 5, 10), equipment, dummyParameter);
+            let actor   = new User("id1", "A", new Status(game, 10, 10), equipment, parameter);
+            let target  = new User("id2", "B", new Status(game, 5, 10), equipment, parameter);
             assert(target.status.currentHp === 5);
-            actor.cure(target, 3, 0);
+            actor.cure(target);
             assert(target.status.currentHp === 8);
         });
 
         it("should not increase target HP over maxHP", () => {
+            let parameter = new Parameter(100, 0);
             let game    = new Game(0, 10);
-            let actor   = new User("id1", "A", new Status(game, 10, 10), equipment, dummyParameter);
-            let target  = new User("id2", "B", new Status(game, 5, 10), equipment, dummyParameter);
-            assert(target.status.currentHp === 5);
-            actor.cure(target, 100, 0);
-            assert(target.status.currentHp === 10);
-        });
-
-        it("should increase cure point with high parameter", () => {
-            let game    = new Game(0, 10);
-            let parameter = new Parameter(5, 0);
             let actor   = new User("id1", "A", new Status(game, 10, 10), equipment, parameter);
-            let target  = new User("id2", "B", new Status(game, 2, 10), equipment, parameter);
-            actor.cure(target, 3, 0);
+            let target  = new User("id2", "B", new Status(game, 5, 10), equipment, parameter);
+            assert(target.status.currentHp === 5);
+            actor.cure(target);
             assert(target.status.currentHp === 10);
         });
 
