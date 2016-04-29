@@ -4,7 +4,10 @@ const Equipment = require(`${__dirname}/game/model/Equipment.js`);
 const Weapon    = require(`${__dirname}/game/model/Weapon.js`);
 const Parameter = require(`${__dirname}/game/model/Parameter.js`);
 const HitRate   = require(`${__dirname}/game/model/HitRate.js`);
-const EventEmitter = require('eventemitter2').EventEmitter2;
+const Spell     = require(`${__dirname}/game/model/Spell.js`);
+const Effect    = require(`${__dirname}/game/model/Effect.js`);
+const AttackEffect  = Effect.AttackEffect;
+const EventEmitter  = require('eventemitter2').EventEmitter2;
 
 class Game extends EventEmitter {
     constructor(minHp, maxHp, minMp, maxMp) {
@@ -57,5 +60,7 @@ module.exports = {
     Equipment: Equipment,
     Weapon: Weapon,
     Parameter: Parameter,
-    HitRate: HitRate
+    HitRate: HitRate,
+    Spell: Spell,
+    AttackEffect: AttackEffect
 }
