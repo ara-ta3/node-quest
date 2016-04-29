@@ -8,6 +8,8 @@ class Status {
         this.currentMp = isNaN(currentMp) ? 0 : currentMp;
         this.maxHp = isNaN(maxHp) ? Infinity : maxHp;
         this.maxMp = isNaN(maxMp) ? Infinity : maxMp;
+        this.minHp = 0;
+        this.minMp = 0;
         Object.freeze(this);
     };
 
