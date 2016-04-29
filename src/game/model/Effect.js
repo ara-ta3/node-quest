@@ -8,6 +8,7 @@ class Effect {
 
 class AttackEffect extends Effect {
     constructor(defaultPower) {
+        super();
         this.defaultPower = defaultPower;
     }
 
@@ -20,4 +21,8 @@ class AttackEffect extends Effect {
             return targetUser.damaged(point.toInt());
         };
     };
+}
+
+module.exports = {
+    AttackEffect: AttackEffect
 }
