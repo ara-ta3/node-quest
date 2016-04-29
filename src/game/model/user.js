@@ -13,31 +13,31 @@ class User extends EventEmitter{
         this.spells = spells || [];
     };
 
-    attack(target, damage) {
-        damage = new Point(
-            damage + this.equipment.weapon.averageOfAttack,
+    attack(target) {
+        let point = new Point(
+            this.equipment.weapon.averageOfAttack,
             this.equipment.weapon.divergenceOfAttack
         ).toInt();
         const hit = this.equipment.weapon.hitRate.hit();
-        damage = hit ? damage : 0;
+        point = hit ? point : 0;
         this.emit("attack", {
             target: target,
-            value: damage,
+            value: point,
             hit: hit
         })
-        const status =  hit ? target.damaged(damage) : target.status;
+        const status =  hit ? target.damaged(point) : target.status;
         hit && target.emit("attacked", {
             actor: this,
             target: target,
-            value: damage,
+            value: point,
             hit: hit
         });
         return status;
     };
 
-    cure(target, point) {
-        point = new Point(
-            point + this.parameter.mindPower,
+    cure(target) {
+        const point = new Point(
+            this.parameter.mindPower,
             this.parameter.mindStability
         ).toInt();
         this.emit("cure", {
