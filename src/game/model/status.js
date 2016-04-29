@@ -1,23 +1,20 @@
 class Status {
-    constructor(game, currentHp, maxHp, currentMp, maxMp) {
-        currentHp = Math.min(currentHp, game.maxHp, maxHp);
-        currentHp = Math.max(currentHp, game.minHp);
-        currentMp = Math.min(currentMp, game.maxMp, maxMp);
-        currentMp = Math.max(currentMp, game.minMp);
+    constructor(currentHp, maxHp, currentMp, maxMp) {
+        currentHp = Math.min(currentHp, maxHp);
+        currentMp = Math.min(currentMp, maxMp);
         this.currentHp = isNaN(currentHp) ? 0 : currentHp;
         this.currentMp = isNaN(currentMp) ? 0 : currentMp;
         this.maxHp = isNaN(maxHp) ? Infinity : maxHp;
         this.maxMp = isNaN(maxMp) ? Infinity : maxMp;
-        this.game = game;
         Object.freeze(this);
     };
 
     changeHp(nextHp) {
-        return new Status(this.game, nextHp, this.maxHp, this.currentMp, this.maxMp);
+        return new Status(nextHp, this.maxHp, this.currentMp, this.maxMp);
     }
 
     changeMp(nextMp) {
-        return new Status(this.game, this.currentHp, this.maxHp, nextMp, this.maxMp);
+        return new Status(this.currentHp, this.maxHp, nextMp, this.maxMp);
     }
 
     canCast(spell) {
@@ -25,7 +22,7 @@ class Status {
     };
 
     isDead() {
-        return this.currentHp <= this.game.minHp;
+        return this.currentHp <= this.minHp;
     };
 }
 
