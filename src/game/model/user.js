@@ -14,11 +14,8 @@ class User extends EventEmitter{
     };
 
     attack(target) {
-        let point = new Point(
-            this.equipment.weapon.averageOfAttack,
-            this.equipment.weapon.divergenceOfAttack
-        ).toInt();
-        const hit = this.equipment.weapon.hitRate.hit();
+        let point = Point.fromWeapon(this.equipment.weapon).toInt();
+        const hit = this.equipment.weapon.hit();
         point = hit ? point : 0;
         this.emit("attack", {
             target: target,
@@ -36,10 +33,7 @@ class User extends EventEmitter{
     };
 
     cure(target) {
-        const point = new Point(
-            this.parameter.mindPower,
-            this.parameter.mindStability
-        ).toInt();
+        const point = Point.fromMindParameter(this.parameter).toInt();
         this.emit("cure", {
             target: target,
             value: point
