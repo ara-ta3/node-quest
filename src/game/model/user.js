@@ -52,6 +52,10 @@ class User extends EventEmitter{
         return this.spells;
     };
 
+    setSpells(spells) {
+        this.spells = spells;
+    }
+
     cast(spell, targets) {
         if(!this.status.canCast(spell)) {
             return null;
