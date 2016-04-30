@@ -4,6 +4,10 @@ class Weapon {
         this.divergenceOfAttack = divergenceOfAttack;
         this.hitRate = hitRate;
     }
+
+    hit() {
+        return this.hitRate.hit();
+    }
 }
 
 module.exports = Weapon;
