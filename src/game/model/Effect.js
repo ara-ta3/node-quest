@@ -14,11 +14,9 @@ class AttackEffect extends Effect {
 
     to(targetUser) {
         return (actorParameter) => {
-            const point = new Point(
-                actorParameter.mindPower + this.defaultPower,
-                actorParameter.mindStability
-                );
-            return targetUser.damaged(point.toInt());
+            return targetUser.damaged(
+                Point.fromMindParameter(actorParameter).toInt() + this.defaultPower
+            );
         };
     };
 }
