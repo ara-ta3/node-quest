@@ -1,8 +1,9 @@
-const Status = require(__dirname + "/Status.js");
-const Point  = require(__dirname + "/Point.js");
-const EventEmitter = require('eventemitter2').EventEmitter2;
-const HitPoint     = require(__dirname + "/HitPoint.js");
-const MagicPoint   = require(__dirname + "/MagicPoint.js");
+const EventEmitter  = require('eventemitter2').EventEmitter2;
+const Status        = require(__dirname + "/Status.js");
+const Point         = require(__dirname + "/Point.js");
+const HitPoint      = require(__dirname + "/HitPoint.js");
+const MagicPoint    = require(__dirname + "/MagicPoint.js");
+const STATUS_VALUES = require(`${__dirname}/../constant/Status.js`);
 
 class User extends EventEmitter {
     constructor(id, name, hp, mp, equipment, parameter, spells, status) {
@@ -15,6 +16,11 @@ class User extends EventEmitter {
         this.parameter = parameter;
         this.spells = spells || [];
         this.status = status || new Status();
+
+        this.status.on("removed", (data) => {
+            data.target === STATUS_VALUES.DEAD;
+            this.cured(1)
+        });
 
         this.hitPoint.empty() && this.status.dead();
         this.hitPoint.on("changed", (data) => {

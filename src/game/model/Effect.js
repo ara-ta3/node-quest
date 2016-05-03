@@ -28,7 +28,19 @@ class CureEffect extends Effect {
     }
 }
 
+class StatusEffect extends Effect {
+    constructor(targetStatus) {
+        super();
+        this.targetStatus = targetStatus;
+    }
+
+    to(targetUser) {
+        return (actorParameter) => targetUser.status.clear(this.targetStatus);
+    }
+}
+
 module.exports = {
     AttackEffect: AttackEffect,
-    CureEffect: CureEffect
+    CureEffect: CureEffect,
+    StatusEffect: StatusEffect
 }
