@@ -50,7 +50,7 @@ describe("Effect", () => {
 
         it("should return result with specific format on status effect", () => {
             const spell   = new Spell("cure", 0, new StatusEffect(STATUS_VALUES.DEAD));
-            const target  = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
+            const target  = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
             const actual = spell.effectTo(target)(emptyParameter)
             assert.deepEqual(actual, {
                 "attack": null,
@@ -58,7 +58,10 @@ describe("Effect", () => {
                 "effects": [{
                     "targetStatus": STATUS_VALUES.DEAD
                 }],
-                "status": [STATUS_VALUES.DEAD]
+                "status": [{
+                    "kind": STATUS_VALUES.DEAD,
+                    "effective": true
+                }]
             });
             assert.ok(actual.effects[0] instanceof StatusEffect)
         });
@@ -68,7 +71,7 @@ describe("Effect", () => {
                     new StatusEffect(STATUS_VALUES.DEAD),
                     new CureEffect(500)
             ]);
-            const target  = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
+            const target  = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
             const actual = spell.effectTo(target)(emptyParameter)
             assert.deepEqual(actual, {
                 "attack": null,
@@ -82,7 +85,11 @@ describe("Effect", () => {
                 }
 
                 ],
-                "status": [STATUS_VALUES.DEAD]
+                "status": [{
+                    "kind": STATUS_VALUES.DEAD,
+                    "effective": true
+                        
+                }]
             });
             assert.ok(actual.effects[0] instanceof StatusEffect)
 

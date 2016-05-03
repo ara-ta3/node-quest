@@ -31,8 +31,12 @@ class Status extends EventEmitter {
         add(this, STATUS_VALUES.DEAD);
     }
 
+    has(status) {
+        return this.currents.indexOf(status) !== -1;
+    }
+
     isDead() {
-        return exists(this.currents, STATUS_VALUES.DEAD)
+        return this.has(STATUS_VALUES.DEAD)
     }
 }
 

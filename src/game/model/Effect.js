@@ -1,4 +1,5 @@
 const Point  = require(__dirname + "/Point.js");
+const UserExceptions = require(__dirname + "/../error/User.js");
 
 class Effect {
     to(user) {
@@ -14,6 +15,9 @@ class AttackEffect extends Effect {
 
     to(targetUser) {
         return (actorParameter) => {
+            if(targetUser.isDead()) {
+                return new UserExceptions.TargetDeadException(targetUser);
+            }
             const p = Point.fromMindParameter(actorParameter).toInt() + this.defaultPower;
             targetUser.damaged(p);
             return {
@@ -36,6 +40,9 @@ class CureEffect extends Effect {
 
     to(targetUser) {
         return (actorParameter) => {
+            if(targetUser.isDead()) {
+                return new UserExceptions.TargetDeadException(targetUser);
+            }
             const p = Point.fromMindParameter(actorParameter).toInt() + this.defaultPower;
             targetUser.cured(p);
             return {
@@ -58,13 +65,15 @@ class StatusEffect extends Effect {
 
     to(targetUser) {
         return (actorParameter) => {
+            const effective = targetUser.status.has(this.targetStatus);
             targetUser.status.clear(this.targetStatus);
             return {
                 effect: this,
                 attack: {},
                 cure: {},
                 status: {
-                    target: this.targetStatus
+                    target: this.targetStatus,
+                    effective: effective
                 }
             }
         }
