@@ -16,6 +16,7 @@ class User extends EventEmitter {
         this.spells = spells || [];
         this.status = status || new Status();
 
+        this.hitPoint.empty() && this.status.dead();
         this.hitPoint.on("changed", (data) => {
             data.next.empty() && this.status.dead();
         });
@@ -35,12 +36,8 @@ class User extends EventEmitter {
         return result;
     };
 
-    setSpells(spells) {
-        this.spells = spells;
-    }
-
     cast(spell, targets) {
-        if(!this.canCast(spell) || !spell.canCast(this.magicPoint)) {
+        if(!this.canCast(spell)) {
             return null;
         }
 
@@ -53,7 +50,8 @@ class User extends EventEmitter {
     }
 
     canCast(spell) {
-        return this.spells.filter((s) => s.name === spell.name).length > 0;
+        return this.spells.filter((s) => s.name === spell.name).length > 0 &&
+            spell.requiredMagicPoint <= this.magicPoint.current;
     }
 
     damaged(x) {

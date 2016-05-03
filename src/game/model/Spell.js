@@ -5,10 +5,6 @@ class Spell {
         this.effect = effect;
     }
 
-    canCast(mp) {
-        return this.requiredMagicPoint <= mp.current;
-    }
-
     cast(mp) {
         return mp.change(mp.current - this.requiredMagicPoint);
     }

@@ -4,23 +4,15 @@ const Game = require(`${__dirname}/../../../src/game.js`).Game;
 
 describe("Status", () => {
     describe("isDead", () => {
-        it("should return true if currentHp equal to or lower than 0", () => {
-            let status = new Status(0, 10);
+        it("should return true if dead is called", () => {
+            let status = new Status();
+            status.dead()
             assert.ok(status.isDead());
         });
 
-        it("should return false if currentHp greater than 0", () => {
-            let status = new Status(1, 10);
+        it("should return false if dead is not called", () => {
+            let status = new Status();
             assert.ok(!status.isDead());
-        });
-    });
-
-    describe("object", () => {
-        it("should not change property", () => {
-            let status = new Status(1, 10);
-            assert.throws( () => {
-                status.currentHp = 10;
-            });
         });
     });
 });

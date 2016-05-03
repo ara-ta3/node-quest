@@ -30,9 +30,8 @@ describe("User", () => {
 
         it("should decrease target's HP when spell has attack effect", () => {
             let spell   = new Spell("ファイア", 0, new AttackEffect(5));
-            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
+            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
             let target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
-            actor.setSpells([spell]);
             actor.cast(spell, [target]);
 
             assert.equal(target.hitPoint.current, 5);
@@ -40,10 +39,9 @@ describe("User", () => {
 
         it("should decrease actor's MP when spell is casted", () => {
             let spell   = new Spell("ファイア", 5, new AttackEffect(5));
-            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(10, 10), emptyEquipment, emptyParameter);
+            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(10, 10), emptyEquipment, emptyParameter, [spell]);
             let target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
 
-            actor.setSpells([spell]);
             actor.cast(spell, [target]);
             assert.equal(actor.magicPoint.current, 5);
         });
@@ -52,20 +50,17 @@ describe("User", () => {
         it("should decrease target's HP more when user has high parameter", () => {
             let param   = new Parameter(10, 0);
             let spell   = new Spell("ファイア", 0, new AttackEffect(10));
-            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(10, 10), emptyEquipment, param);
+            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(10, 10), emptyEquipment, param, [spell]);
             let target  = new User("id2", "B", new HitPoint(30, 30), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
 
-            actor.setSpells([spell]);
             actor.cast(spell, [target]);
             assert.equal(target.hitPoint.current, 10);
         });
 
         it("should return null when user does not have enough mp", () => {
-
-            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
-            let target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
             let spell   = new Spell("ファイア", 5, new AttackEffect(10));
-            actor.setSpells([spell]);
+            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter, [spell]);
+            let target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
             let result  = actor.cast(spell, [target]);
             assert.equal(result, null);
             assert.equal(target.hitPoint.current, 10);
@@ -78,11 +73,28 @@ describe("User", () => {
 
         it("should increase target's HP when user cast cure spell", () => {
             let spell   = new Spell("キュア", 0, new CureEffect(5));
-            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
+            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter, [spell]);
             let target  = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
-            actor.setSpells([spell]);
             actor.cast(spell, [target]);
             assert.equal(target.hitPoint.current, 5);
         });
+    });
+
+    describe("isDead", () => {
+        let emptyEquipment = new Equipment(new Weapon(0, 0, new HitRate(100)));
+        let emptyParameter = new Parameter(0, 0);
+
+        it("should return true when user's HP become empty", () => {
+            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
+            actor.damaged(Infinity);
+            assert.ok(actor.isDead())
+        });
+
+        it("should return true when user's HP is empty", () => {
+            let actor   = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
+            assert.ok(actor.isDead())
+        });
+
+
     });
 });
