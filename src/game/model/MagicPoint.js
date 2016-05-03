@@ -8,7 +8,7 @@ class MagicPoint {
     constructor(current, max) {
         this.max = max;
         this.min = 0;
-        this.current = filter(curremt, 0, this.max);
+        this.current = filter(current, 0, this.max);
     };
 
     change(next) {
