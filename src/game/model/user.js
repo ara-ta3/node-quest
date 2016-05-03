@@ -5,6 +5,10 @@ const HitPoint      = require(__dirname + "/HitPoint.js");
 const MagicPoint    = require(__dirname + "/MagicPoint.js");
 const STATUS_VALUES = require(`${__dirname}/../constant/Status.js`);
 
+function findSpell(spellName, spells) {
+    return spells.filter((s) => s.name === spellName).pop() || null;
+}
+
 class User extends EventEmitter {
     constructor(id, name, hp, mp, equipment, parameter, spells, status) {
         super();
@@ -32,32 +36,47 @@ class User extends EventEmitter {
         const hit = this.equipment.weapon.hit();
         const point = hit ? Point.fromWeapon(this.equipment.weapon).toInt() : 0;
         hit && target.damaged(point);
-        const result = {
-            actor: this,
-            target: target,
+        const result = User.actResult(this, target, {
             value: point,
             hit: hit
-        };
+        }, null);
         hit && target.emit("attacked", result);
         return result;
     };
 
-    cast(spell, targets) {
-        if(!this.canCast(spell)) {
-            return null;
+    cast(spellName, targets) {
+        const spell = findSpell(spellName, this.spells)
+        if(spell === null) {
+            return {
+                spellName: spellName,
+                hasSpell: false,
+                enoughMagicPoint: null,
+                cast: null
+            };
         }
-
+        if(!this.enoughMagicPoint(spell)) {
+            return {
+                spellName: spellName,
+                hasSpell: true,
+                enoughMagicPoint: false,
+                cast: null
+            };
+        }
         this.magicPoint = spell.cast(this.magicPoint);
-        return targets.map(
-            (user) => spell.effectTo(user)
-        ).map(
-            (effectWithParameter) => effectWithParameter(this.parameter)
-        );
+        return {
+            spellName: spellName,
+            hasSpell: true,
+            enoughMagicPoint: true,
+            cast: targets.map((target) => {
+                const effectWithParameter = spell.effectTo(target);
+                const effectsResult = effectWithParameter(this.parameter);
+                return User.actResult(this, target, null, effectsResult);
+            })
+        };
     }
 
-    canCast(spell) {
-        return this.spells.filter((s) => s.name === spell.name).length > 0 &&
-            spell.requiredMagicPoint <= this.magicPoint.current;
+    enoughMagicPoint(spell) {
+        return spell.requiredMagicPoint <= this.magicPoint.current;
     }
 
     damaged(x) {
@@ -79,6 +98,15 @@ class User extends EventEmitter {
     isDead() {
         return this.status.isDead();
     };
+
+    static actResult(actor, target, attack, effects) {
+        return {
+            actor: actor,
+            target: target,
+            attack: attack,
+            effects: effects
+        }
+    }
 }
 
 module.exports = User;

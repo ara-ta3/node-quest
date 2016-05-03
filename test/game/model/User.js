@@ -18,90 +18,124 @@ const STATUS_VALUES = require(`${__dirname}/../../../src/game/constant/Status.js
 describe("User", () => {
     describe("attack", () => {
         it("should decrease target HP", () => {
-            let equipment = new Equipment(new Weapon(5, 0, new HitRate(100)));
-            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 0), equipment);
-            let target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), equipment);
-            actor.attack(target);
+            const equipment = new Equipment(new Weapon(5, 0, new HitRate(100)));
+            const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 0), equipment);
+            const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), equipment);
+            const actual = actor.attack(target);
             assert.equal(target.hitPoint.current, 5);
+            assert.deepEqual(actual, {
+                "actor": actor,
+                "target": target,
+                "attack": {
+                    value: 5,
+                    hit: true
+                },
+                effects: null
+            });
         });
     });
 
     describe("cast", () => {
-        let emptyEquipment = new Equipment(new Weapon(0, 0, new HitRate(100)));
-        let emptyParameter = new Parameter(0, 0);
+        const emptyEquipment = new Equipment(new Weapon(0, 0, new HitRate(100)));
+        const emptyParameter = new Parameter(0, 0);
+
+        it("should return result with specific format", () => {
+            const spell   = new Spell("ファイア", 0, new AttackEffect(5));
+            const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
+            const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
+            const actual = actor.cast(spell.name, [target]).cast.pop();
+            assert.deepEqual(actual, {
+                "actor": actor,
+                "target": target,
+                "attack": null,
+                "effects": {
+                    "attack": 5,
+                    "cure": null,
+                    "effects": [{
+                        "defaultPower": 5
+                    }],
+                    "status": []
+                }
+            });
+        });
 
         it("should decrease target's HP when spell has attack effect", () => {
-            let spell   = new Spell("ファイア", 0, new AttackEffect(5));
-            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
-            let target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
-            actor.cast(spell, [target]);
+            const spell   = new Spell("ファイア", 0, new AttackEffect(5));
+            const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
+            const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
+            actor.cast(spell.name, [target]);
 
             assert.equal(target.hitPoint.current, 5);
         });
 
         it("should decrease actor's MP when spell is casted", () => {
-            let spell   = new Spell("ファイア", 5, new AttackEffect(5));
-            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(10, 10), emptyEquipment, emptyParameter, [spell]);
-            let target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
+            const spell   = new Spell("ファイア", 5, new AttackEffect(5));
+            const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(10, 10), emptyEquipment, emptyParameter, [spell]);
+            const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
 
-            actor.cast(spell, [target]);
+            actor.cast(spell.name, [target]);
             assert.equal(actor.magicPoint.current, 5);
         });
 
 
         it("should decrease target's HP more when user has high parameter", () => {
-            let param   = new Parameter(10, 0);
-            let spell   = new Spell("ファイア", 0, new AttackEffect(10));
-            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(10, 10), emptyEquipment, param, [spell]);
-            let target  = new User("id2", "B", new HitPoint(30, 30), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
+            const param   = new Parameter(10, 0);
+            const spell   = new Spell("ファイア", 0, new AttackEffect(10));
+            const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(10, 10), emptyEquipment, param, [spell]);
+            const target  = new User("id2", "B", new HitPoint(30, 30), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
 
-            actor.cast(spell, [target]);
+            actor.cast(spell.name, [target]);
             assert.equal(target.hitPoint.current, 10);
         });
 
-        it("should return null when user does not have enough mp", () => {
-            let spell   = new Spell("ファイア", 5, new AttackEffect(10));
-            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter, [spell]);
-            let target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
-            let result  = actor.cast(spell, [target]);
-            assert.equal(result, null);
+        it("should return as it does not have enough mp when user does not have enough mp", () => {
+            const spell   = new Spell("ファイア", 5, new AttackEffect(10));
+            const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter, [spell]);
+            const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
+            const result  = actor.cast(spell.name, [target]);
+            assert.ok(!result.enoughMagicPoint);
             assert.equal(target.hitPoint.current, 10);
         });
 
-        it("should return null when user does not learn spell", () => {
-            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
-            assert.equal(actor.cast(new Spell("ファイア", 5, new AttackEffect(10))), null)
+        it("should return as it does not have spell when user does not learn spell", () => {
+            const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
+            assert.deepEqual(actor.cast("fire"), {
+                spellName: "fire",
+                hasSpell: false,
+                enoughMagicPoint: null,
+                cast: null
+            });
         });
 
         it("should increase target's HP when user cast cure spell", () => {
-            let spell   = new Spell("キュア", 0, new CureEffect(5));
-            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter, [spell]);
-            let target  = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
-            actor.cast(spell, [target]);
+            const spell   = new Spell("キュア", 0, new CureEffect(5));
+            const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter, [spell]);
+            const target  = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
+            actor.cast(spell.name, [target]);
             assert.equal(target.hitPoint.current, 5);
         });
 
         it("should clear the target's dead status and its hit point will increase to 1 when an user casts the spell for dead status", () => {
-            let spell   = new Spell("raise", 0, new StatusEffect(STATUS_VALUES.DEAD));
-            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter, [spell]);
-            let target  = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
-            actor.cast(spell, [target]);
+            const spell   = new Spell("raise", 0, new StatusEffect(STATUS_VALUES.DEAD));
+            const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter, [spell]);
+            const target  = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
+            actor.cast(spell.name, [target]);
             assert.equal(target.hitPoint.current, 1);
         });
     });
 
     describe("isDead", () => {
-        let emptyEquipment = new Equipment(new Weapon(0, 0, new HitRate(100)));
-        let emptyParameter = new Parameter(0, 0);
+        const emptyEquipment = new Equipment(new Weapon(0, 0, new HitRate(100)));
+        const emptyParameter = new Parameter(0, 0);
 
         it("should return true when user's HP become empty", () => {
-            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
+            const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
             actor.damaged(Infinity);
             assert.ok(actor.isDead())
         });
 
         it("should return true when user's HP is empty", () => {
-            let actor   = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
+            const actor   = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
             assert.ok(actor.isDead())
         });
 
