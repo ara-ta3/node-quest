@@ -1,17 +1,21 @@
 const EventEmitter = require('eventemitter2').EventEmitter2;
 
+function filter(v, min, max) {
+    v = Math.min(v, max);
+    v = Math.max(v, min);
+    return v;
+}
+
 class HitPoint extends EventEmitter {
     constructor(current, max) {
         super();
-        current = Math.min(current, max);
-        current = Math.max(current, 0);
-        this.current = current;
         this.max = max;
         this.min = 0;
+        this.current = this.change(current);
     };
 
     change(next) {
-        this.current = next;
+        this.current = filter(next, 0, this.max);;
         this.emit("changed", {
             next: this
         });
