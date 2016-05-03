@@ -1,4 +1,4 @@
-const Status = require(__dirname + "/status.js");
+const Status = require(__dirname + "/Status.js");
 const Point  = require(__dirname + "/Point.js");
 const EventEmitter = require('eventemitter2').EventEmitter2;
 const HitPoint     = require(__dirname + "/HitPoint.js");

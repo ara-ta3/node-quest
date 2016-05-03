@@ -1,5 +1,5 @@
 const User      = require(`${__dirname}/game/model/user.js`);
-const Status    = require(`${__dirname}/game/model/status.js`);
+const Status    = require(`${__dirname}/game/model/Status.js`);
 const Equipment = require(`${__dirname}/game/model/Equipment.js`);
 const Weapon    = require(`${__dirname}/game/model/Weapon.js`);
 const Parameter = require(`${__dirname}/game/model/Parameter.js`);
