@@ -11,7 +11,7 @@ class HitPoint extends EventEmitter {
         super();
         this.max = max;
         this.min = 0;
-        this.current = this.change(current);
+        this.current = filter(current, 0, this.max);
     };
 
     change(next) {
