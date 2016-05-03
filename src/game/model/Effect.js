@@ -13,11 +13,7 @@ class AttackEffect extends Effect {
     }
 
     to(targetUser) {
-        return (actorParameter) => {
-            return targetUser.damaged(
-                Point.fromMindParameter(actorParameter).toInt() + this.defaultPower
-            );
-        };
+        return (actorParameter) => targetUser.damaged(Point.fromMindParameter(actorParameter).toInt() + this.defaultPower);
     };
 }
 
@@ -28,9 +24,7 @@ class CureEffect extends Effect {
     }
 
     to(targetUser) {
-        return (actorParameter) => {
-            return targetUser.cured(Point.fromMindParameter(actorParameter).toInt() + this.defaultPower);
-        };
+        return (actorParameter) => targetUser.cured(Point.fromMindParameter(actorParameter).toInt() + this.defaultPower)
     }
 }
 

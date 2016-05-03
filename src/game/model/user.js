@@ -1,61 +1,47 @@
-const Status = require(__dirname + "/status.js");
+const Status = require(__dirname + "/Status.js");
 const Point  = require(__dirname + "/Point.js");
 const EventEmitter = require('eventemitter2').EventEmitter2;
+const HitPoint     = require(__dirname + "/HitPoint.js");
+const MagicPoint   = require(__dirname + "/MagicPoint.js");
 
-class User extends EventEmitter{
-    constructor(id, name, status, equipment, parameter, spells) {
+class User extends EventEmitter {
+    constructor(id, name, hp, mp, equipment, parameter, spells, status) {
         super();
         this.id = id;
         this.name = name;
-        this.status = status;
+        this.hitPoint = hp;
+        this.magicPoint = mp;
         this.equipment = equipment;
         this.parameter = parameter;
         this.spells = spells || [];
+        this.status = status || new Status();
+
+        this.hitPoint.empty() && this.status.dead();
+        this.hitPoint.on("changed", (data) => {
+            data.next.empty() && this.status.dead();
+        });
     };
 
     attack(target) {
-        let point = Point.fromWeapon(this.equipment.weapon).toInt();
         const hit = this.equipment.weapon.hit();
-        point = hit ? point : 0;
-        this.emit("attack", {
-            target: target,
-            value: point,
-            hit: hit
-        })
-        const status =  hit ? target.damaged(point) : target.status;
-        hit && target.emit("attacked", {
+        const point = hit ? Point.fromWeapon(this.equipment.weapon).toInt() : 0;
+        hit && target.damaged(point);
+        const result = {
             actor: this,
             target: target,
             value: point,
             hit: hit
-        });
-        return status;
+        };
+        hit && target.emit("attacked", result);
+        return result;
     };
-
-    learn(spell) {
-        this.spells.push(spell);
-        return this.spells;
-    };
-
-    setSpells(spells) {
-        this.spells = spells;
-    }
 
     cast(spell, targets) {
-        if(!this.status.canCast(spell)) {
+        if(!this.canCast(spell)) {
             return null;
         }
 
-        this.emit("cast", {
-            targets: targets,
-            spell: spell,
-        });
-        targets.forEach((user) => user.emit("casted", {
-            actor: this,
-            target: user,
-            spell: spell
-        }));
-        this.status = this.status.changeMp(this.status.currentMp - spell.requiredMp);
+        this.magicPoint = spell.cast(this.magicPoint);
         return targets.map(
             (user) => spell.effectTo(user)
         ).map(
@@ -63,28 +49,25 @@ class User extends EventEmitter{
         );
     }
 
-    findSpell(spellName) {
-        return this.spells.filter((s) => s.name === spellName).pop() || null;
-    };
-
-    sameAs(target) {
-        return target.name === this.name;
-    };
+    canCast(spell) {
+        return this.spells.filter((s) => s.name === spell.name).length > 0 &&
+            spell.requiredMagicPoint <= this.magicPoint.current;
+    }
 
     damaged(x) {
-        this.status = this.status.changeHp(this.status.currentHp - x)
-        this.emit("hp-changed", {
+        this.hitPoint.change(this.hitPoint.current - x);
+        return {
+            target: this,
             value: x
-        })
-        return this.status;
+        };
     };
 
     cured(x) {
-        this.status = this.status.changeHp(this.status.currentHp + x)
-        this.emit("hp-changed", {
+        this.hitPoint.change(this.hitPoint.current + x);
+        return {
+            target: this,
             value: x
-        })
-        return this.status;
+        };
     };
 
     isDead() {
