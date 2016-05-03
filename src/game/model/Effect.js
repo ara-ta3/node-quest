@@ -21,6 +21,20 @@ class AttackEffect extends Effect {
     };
 }
 
+class CureEffect extends Effect {
+    constructor(defaultPower) {
+        super();
+        this.defaultPower = defaultPower;
+    }
+
+    to(targetUser) {
+        return (actorParameter) => {
+            return targetUser.cured(Point.fromMindParameter(actorParameter).toInt() + this.defaultPower);
+        };
+    }
+}
+
 module.exports = {
-    AttackEffect: AttackEffect
+    AttackEffect: AttackEffect,
+    CureEffect: CureEffect
 }

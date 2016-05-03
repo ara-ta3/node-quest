@@ -32,21 +32,6 @@ class User extends EventEmitter{
         return status;
     };
 
-    cure(target) {
-        const point = Point.fromMindParameter(this.parameter).toInt();
-        this.emit("cure", {
-            target: target,
-            value: point
-        })
-        let status =  target.cured(point);
-        target.emit("cured", {
-            actor: this,
-            target: target,
-            value: point
-        });
-        return status;
-    };
-
     learn(spell) {
         this.spells.push(spell);
         return this.spells;
@@ -80,10 +65,6 @@ class User extends EventEmitter{
 
     findSpell(spellName) {
         return this.spells.filter((s) => s.name === spellName).pop() || null;
-    };
-
-    fullCare(target) {
-        return target.cured(Infinity);
     };
 
     sameAs(target) {
