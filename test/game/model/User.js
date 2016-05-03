@@ -9,6 +9,8 @@ const HitRate   = require(`${__dirname}/../../../src/game/model/HitRate.js`);
 const Spell  = require(`${__dirname}/../../../src/game/model/Spell.js`);
 const Effect = require(`${__dirname}/../../../src/game/model/Effect.js`);
 const AttackEffect = Effect.AttackEffect;
+const CureEffect   = Effect.CureEffect;
+
 
 describe("User", () => {
     describe("attack", () => {
@@ -21,36 +23,14 @@ describe("User", () => {
         });
     });
 
-    describe("cure", () => {
-        let equipment = new Equipment(new Weapon(0, 0, new HitRate(100)));
-        it("should increase target HP", () => {
-            let parameter = new Parameter(3, 0);
-            let actor   = new User("id1", "A", new Status(10, 10), equipment, parameter);
-            let target  = new User("id2", "B", new Status(5, 10), equipment, parameter);
-            assert(target.status.currentHp === 5);
-            actor.cure(target);
-            assert(target.status.currentHp === 8);
-        });
-
-        it("should not increase target HP over maxHP", () => {
-            let parameter = new Parameter(100, 0);
-            let actor   = new User("id1", "A", new Status(10, 10), equipment, parameter);
-            let target  = new User("id2", "B", new Status(5, 10), equipment, parameter);
-            assert(target.status.currentHp === 5);
-            actor.cure(target);
-            assert(target.status.currentHp === 10);
-        });
-
-    });
-
     describe("cast", () => {
-        let dummyEquipment = new Equipment(new Weapon(0, 0, new HitRate(100)));
-        let dummyParameter = new Parameter(0, 0);
+        let emptyEquipment = new Equipment(new Weapon(0, 0, new HitRate(100)));
+        let emptyParameter = new Parameter(0, 0);
 
         it("should decrease target's HP when spell has attack effect", () => {
             let spell   = new Spell("ファイア", 0, new AttackEffect(10));
-            let actor   = new User("id1", "A", new Status(10, 10), dummyEquipment, dummyParameter);
-            let target  = new User("id2", "B", new Status(10, 10), dummyEquipment, dummyParameter);
+            let actor   = new User("id1", "A", new Status(10, 10), emptyEquipment, emptyParameter);
+            let target  = new User("id2", "B", new Status(10, 10), emptyEquipment, emptyParameter);
             actor.learn(spell);
             actor.cast(spell, [target]);
             assert.equal(target.status.currentHp, 0);
@@ -58,8 +38,8 @@ describe("User", () => {
 
         it("should decrease actor's MP when spell is casted", () => {
             let spell   = new Spell("ファイア", 5, new AttackEffect(10));
-            let actor   = new User("id1", "A", new Status(10, 10, 10, 10), dummyEquipment, dummyParameter);
-            let target  = new User("id2", "B", new Status(10, 10), dummyEquipment, dummyParameter);
+            let actor   = new User("id1", "A", new Status(10, 10, 10, 10), emptyEquipment, emptyParameter);
+            let target  = new User("id2", "B", new Status(10, 10), emptyEquipment, emptyParameter);
             actor.learn(spell);
             actor.cast(spell, [target]);
             assert.equal(actor.status.currentMp, 5);
@@ -69,16 +49,16 @@ describe("User", () => {
         it("should decrease target's HP more when user has high parameter", () => {
             let param   = new Parameter(10, 0);
             let spell   = new Spell("ファイア", 0, new AttackEffect(10));
-            let actor   = new User("id1", "A", new Status(10, 10), dummyEquipment, param);
-            let target  = new User("id2", "B", new Status(30, 30), dummyEquipment, dummyParameter);
+            let actor   = new User("id1", "A", new Status(10, 10), emptyEquipment, param);
+            let target  = new User("id2", "B", new Status(30, 30), emptyEquipment, emptyParameter);
             actor.learn(spell);
             actor.cast(spell, [target]);
             assert.equal(target.status.currentHp, 10);
         });
 
         it("should return null when user does not have enough mp", () => {
-            let actor   = new User("id1", "A", new Status(10, 10, 0, 10), dummyEquipment, dummyParameter);
-            let target  = new User("id2", "B", new Status(30, 30), dummyEquipment, dummyParameter);
+            let actor   = new User("id1", "A", new Status(10, 10, 0, 10), emptyEquipment, emptyParameter);
+            let target  = new User("id2", "B", new Status(30, 30), emptyEquipment, emptyParameter);
             let spell   = new Spell("ファイア", 5, new AttackEffect(10));
             actor.learn(spell);
             let result  = actor.cast(spell, [target]);
@@ -88,14 +68,24 @@ describe("User", () => {
 
         it("should return learned spell when findSpell is called", () => {
             let spell   = new Spell("ファイア", 0, new AttackEffect(10));
-            let actor   = new User("id1", "A", new Status(10, 10), dummyEquipment, dummyParameter);
+            let actor   = new User("id1", "A", new Status(10, 10), emptyEquipment, emptyParameter);
             actor.learn(spell);
             assert.equal(actor.findSpell("ファイア"), spell)
         });
 
         it("should return null when user does not learn spell", () => {
-            let actor   = new User("id1", "A", new Status(10, 10), dummyEquipment, dummyParameter);
+            let actor   = new User("id1", "A", new Status(10, 10), emptyEquipment, emptyParameter);
             assert.equal(actor.findSpell("ファイア"), null)
+        });
+
+        it("should increase target's HP when user cast cure spell", () => {
+            let spell   = new Spell("キュア", 0, new CureEffect(5));
+            let actor   = new User("id1", "A", new Status(10, 10), emptyEquipment, emptyParameter);
+            let target  = new User("id2", "B", new Status(0, 10), emptyEquipment, emptyParameter);
+            actor.learn(spell);
+            actor.cast(spell, [target]);
+            assert.equal(target.status.currentHp, 5);
+
         });
     });
 
@@ -110,15 +100,6 @@ describe("User", () => {
             let actor   = new User("id1", "A", new Status(10, 10));
             let target  = new User("id1", "B", new Status(10, 10));
             assert(actor.sameAs(target) === false);
-        });
-    });
-
-    describe("fullCare", () => {
-        it("should increase target HP to max HP", () => {
-            let actor   = new User("id1", "A", new Status(10, 10));
-            let target  = new User("id2", "B", new Status(1, 10));
-            actor.fullCare(target);
-            assert.equal(target.status.currentHp, 10);
         });
     });
 });
