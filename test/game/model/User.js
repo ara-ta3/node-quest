@@ -14,6 +14,7 @@ const AttackEffect = Effect.AttackEffect;
 const CureEffect   = Effect.CureEffect;
 const StatusEffect = Effect.StatusEffect;
 const STATUS_VALUES = require(`${__dirname}/../../../src/game/constant/Status.js`);
+const UserExceptions = require(`${__dirname}/../../../src/game/error/User.js`);
 
 describe("User", () => {
     describe("attack", () => {
@@ -33,6 +34,23 @@ describe("User", () => {
                 effects: null
             });
         });
+
+        it("should not attack if actor is dead", () => {
+            const equipment = new Equipment(new Weapon(5, 0, new HitRate(100)));
+            const actor   = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 0), equipment);
+            const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), equipment);
+            const actual = actor.attack(target);
+            assert.ok(actual instanceof UserExceptions.ActorDeadException);
+        });
+
+        it("should not attack if target is dead", () => {
+            const equipment = new Equipment(new Weapon(5, 0, new HitRate(100)));
+            const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 0), equipment);
+            const target  = new User("id2", "B", new HitPoint(0, 10), new MagicPoint(0, 0), equipment);
+            const actual = actor.attack(target);
+            assert.ok(actual instanceof UserExceptions.TargetDeadException);
+        });
+
     });
 
     describe("cast", () => {
@@ -43,7 +61,7 @@ describe("User", () => {
             const spell   = new Spell("ファイア", 0, new AttackEffect(5));
             const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
             const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
-            const actual = actor.cast(spell.name, [target]).cast.pop();
+            const actual = actor.cast(spell.name, target);
             assert.deepEqual(actual, {
                 "actor": actor,
                 "target": target,
@@ -63,7 +81,7 @@ describe("User", () => {
             const spell   = new Spell("ファイア", 0, new AttackEffect(5));
             const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
             const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
-            actor.cast(spell.name, [target]);
+            actor.cast(spell.name, target);
 
             assert.equal(target.hitPoint.current, 5);
         });
@@ -73,7 +91,7 @@ describe("User", () => {
             const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(10, 10), emptyEquipment, emptyParameter, [spell]);
             const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
 
-            actor.cast(spell.name, [target]);
+            actor.cast(spell.name, target);
             assert.equal(actor.magicPoint.current, 5);
         });
 
@@ -84,7 +102,7 @@ describe("User", () => {
             const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(10, 10), emptyEquipment, param, [spell]);
             const target  = new User("id2", "B", new HitPoint(30, 30), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
 
-            actor.cast(spell.name, [target]);
+            actor.cast(spell.name, target);
             assert.equal(target.hitPoint.current, 10);
         });
 
@@ -92,34 +110,30 @@ describe("User", () => {
             const spell   = new Spell("ファイア", 5, new AttackEffect(10));
             const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter, [spell]);
             const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
-            const result  = actor.cast(spell.name, [target]);
+            const result  = actor.cast(spell.name, target);
             assert.ok(!result.enoughMagicPoint);
             assert.equal(target.hitPoint.current, 10);
         });
 
         it("should return as it does not have spell when user does not learn spell", () => {
             const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
-            assert.deepEqual(actor.cast("fire"), {
-                spellName: "fire",
-                hasSpell: false,
-                enoughMagicPoint: null,
-                cast: null
-            });
+            const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
+            assert.ok(actor.cast("fire", target) instanceof UserExceptions.NoTargetSpellException);
         });
 
         it("should increase target's HP when user cast cure spell", () => {
             const spell   = new Spell("キュア", 0, new CureEffect(5));
             const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter, [spell]);
-            const target  = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
-            actor.cast(spell.name, [target]);
-            assert.equal(target.hitPoint.current, 5);
+            const target  = new User("id1", "A", new HitPoint(2, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
+            actor.cast(spell.name, target);
+            assert.equal(target.hitPoint.current, 7);
         });
 
         it("should clear the target's dead status and its hit point will increase to 1 when an user casts the spell for dead status", () => {
             const spell   = new Spell("raise", 0, new StatusEffect(STATUS_VALUES.DEAD));
             const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter, [spell]);
             const target  = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
-            actor.cast(spell.name, [target]);
+            actor.cast(spell.name, target);
             assert.equal(target.hitPoint.current, 1);
         });
     });
