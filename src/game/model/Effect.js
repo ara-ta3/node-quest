@@ -13,7 +13,18 @@ class AttackEffect extends Effect {
     }
 
     to(targetUser) {
-        return (actorParameter) => targetUser.damaged(Point.fromMindParameter(actorParameter).toInt() + this.defaultPower);
+        return (actorParameter) => {
+            const p = Point.fromMindParameter(actorParameter).toInt() + this.defaultPower;
+            targetUser.damaged(p);
+            return {
+                effect: this,
+                attack: {
+                    value: p
+                },
+                cure: {},
+                status: {}
+            }
+        }
     };
 }
 
@@ -24,7 +35,18 @@ class CureEffect extends Effect {
     }
 
     to(targetUser) {
-        return (actorParameter) => targetUser.cured(Point.fromMindParameter(actorParameter).toInt() + this.defaultPower)
+        return (actorParameter) => {
+            const p = Point.fromMindParameter(actorParameter).toInt() + this.defaultPower;
+            targetUser.cured(p);
+            return {
+                effect: this,
+                attack: {},
+                cure: {
+                    value: p
+                },
+                status: {}
+            }
+        }
     }
 }
 
@@ -35,7 +57,17 @@ class StatusEffect extends Effect {
     }
 
     to(targetUser) {
-        return (actorParameter) => targetUser.status.clear(this.targetStatus);
+        return (actorParameter) => {
+            targetUser.status.clear(this.targetStatus);
+            return {
+                effect: this,
+                attack: {},
+                cure: {},
+                status: {
+                    target: this.targetStatus
+                }
+            }
+        }
     }
 }
 
