@@ -1,20 +1,38 @@
-const STATUS_DEAD = "dead";
+const EventEmitter = require('eventemitter2').EventEmitter2;
+const STATUS_VALUES = require(`${__dirname}/../constant/Status.js`);
 
 function exists(arr, v) {
     return arr.indexOf(v) !== -1;
 }
 
-class Status {
+function add(status, target) {
+    status.currents = status.currents.concat([target]);
+}
+
+function remove(status, target) {
+    status.emit("removed", {
+        status: status,
+        target: target
+    })
+    status.currents = status.currents.filter((s) => s !== target);
+}
+
+class Status extends EventEmitter {
     constructor(currents) {
+        super();
         this.currents = currents || [];
     }
 
+    clear(targetStatus) {
+        remove(this, targetStatus);
+    }
+
     dead() {
-        this.currents = [STATUS_DEAD];
+        add(this, STATUS_VALUES.DEAD);
     }
 
     isDead() {
-        return exists(this.currents, STATUS_DEAD)
+        return exists(this.currents, STATUS_VALUES.DEAD)
     }
 }
 

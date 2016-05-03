@@ -1,17 +1,19 @@
 const assert = require('power-assert');
-const User = require(`${__dirname}/../../../src/game/model/user.js`);
-const Status = require(`${__dirname}/../../../src/game/model/Status.js`);
-const Game = require(`${__dirname}/../../../src/game.js`).Game;
+const User      = require(`${__dirname}/../../../src/game/model/user.js`);
+const Status    = require(`${__dirname}/../../../src/game/model/Status.js`);
+const Game      = require(`${__dirname}/../../../src/game.js`).Game;
 const Equipment = require(`${__dirname}/../../../src/game/model/Equipment.js`);
-const Weapon = require(`${__dirname}/../../../src/game/model/Weapon.js`);
+const Weapon    = require(`${__dirname}/../../../src/game/model/Weapon.js`);
 const Parameter = require(`${__dirname}/../../../src/game/model/Parameter.js`);
 const HitRate   = require(`${__dirname}/../../../src/game/model/HitRate.js`);
-const Spell  = require(`${__dirname}/../../../src/game/model/Spell.js`);
-const Effect = require(`${__dirname}/../../../src/game/model/Effect.js`);
+const Spell     = require(`${__dirname}/../../../src/game/model/Spell.js`);
+const Effect    = require(`${__dirname}/../../../src/game/model/Effect.js`);
 const HitPoint  = require(`${__dirname}/../../../src/game/model/HitPoint.js`);
-const MagicPoint    = require(`${__dirname}/../../../src/game/model/MagicPoint.js`);
+const MagicPoint   = require(`${__dirname}/../../../src/game/model/MagicPoint.js`);
 const AttackEffect = Effect.AttackEffect;
 const CureEffect   = Effect.CureEffect;
+const StatusEffect = Effect.StatusEffect;
+const STATUS_VALUES = require(`${__dirname}/../../../src/game/constant/Status.js`);
 
 describe("User", () => {
     describe("attack", () => {
@@ -77,6 +79,14 @@ describe("User", () => {
             let target  = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
             actor.cast(spell, [target]);
             assert.equal(target.hitPoint.current, 5);
+        });
+
+        it("should clear the target's dead status and its hit point will increase to 1 when an user casts the spell for dead status", () => {
+            let spell   = new Spell("raise", 0, new StatusEffect(STATUS_VALUES.DEAD));
+            let actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter, [spell]);
+            let target  = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
+            actor.cast(spell, [target]);
+            assert.equal(target.hitPoint.current, 1);
         });
     });
 
