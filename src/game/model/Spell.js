@@ -1,8 +1,8 @@
 class Spell {
-    constructor(name, requiredMp, effect) {
+    constructor(name, requiredMp, effects) {
         this.name = name;
         this.requiredMagicPoint = requiredMp;
-        this.effect = effect;
+        this.effects = Array.isArray(effects) ? effects : [effects];
     }
 
     cast(mp) {
@@ -10,7 +10,7 @@ class Spell {
     }
 
     effectTo(user) {
-        return this.effect.to(user);
+        return (parameter) => this.effects.map((e) => e.to(user)).map((effectWith) => effectWith(parameter));
     }
 }
 
