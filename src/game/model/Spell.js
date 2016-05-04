@@ -19,6 +19,8 @@ class Spell {
         }).reduce((pre, cur) => {
             if(cur instanceof Error) {
                 return cur;
+            } else if (pre instanceof Error) {
+                return pre;
             }
             return {
                 "attack": sumUpIfExists(pre.attack, cur.attack.value),
