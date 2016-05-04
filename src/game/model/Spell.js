@@ -1,8 +1,11 @@
+const StatusEffect    = require(`${__dirname}/Effect.js`).StatusEffect;
+
 class Spell {
     constructor(name, requiredMp, effects) {
         this.name = name;
         this.requiredMagicPoint = requiredMp;
         this.effects = Array.isArray(effects) ? effects : [effects];
+        this.effects.sort((e1, e2) => e2 instanceof StatusEffect)
     }
 
     cast(mp) {
@@ -14,10 +17,18 @@ class Spell {
             const effectWith = e.to(user);
             return effectWith(parameter)
         }).reduce((pre, cur) => {
+            if(cur instanceof Error) {
+                return cur;
+            } else if (pre instanceof Error) {
+                return pre;
+            }
             return {
                 "attack": sumUpIfExists(pre.attack, cur.attack.value),
                 "cure": sumUpIfExists(pre.cure, cur.cure.value),
-                "status": pre.status.concat(cur.status.target).filter((s) => s !== undefined),
+                "status": pre.status.concat([{
+                    kind: cur.status.target,
+                    effective: cur.status.effective
+                }]).filter((s) => s.kind !== undefined),
                 "effects": pre.effects.concat([cur.effect])
             };
         }, {

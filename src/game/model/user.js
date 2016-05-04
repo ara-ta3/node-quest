@@ -4,6 +4,7 @@ const Point         = require(__dirname + "/Point.js");
 const HitPoint      = require(__dirname + "/HitPoint.js");
 const MagicPoint    = require(__dirname + "/MagicPoint.js");
 const STATUS_VALUES = require(`${__dirname}/../constant/Status.js`);
+const UserExceptions = require(__dirname + "/../error/User.js");
 
 function findSpell(spellName, spells) {
     return spells.filter((s) => s.name === spellName).pop() || null;
@@ -33,6 +34,12 @@ class User extends EventEmitter {
     };
 
     attack(target) {
+        if(this.isDead()) {
+            return new UserExceptions.ActorDeadException(this);
+        } else if(target.isDead()) {
+            return new UserExceptions.TargetDeadException(target);
+        }
+
         const hit = this.equipment.weapon.hit();
         const point = hit ? Point.fromWeapon(this.equipment.weapon).toInt() : 0;
         hit && target.damaged(point);
@@ -44,39 +51,22 @@ class User extends EventEmitter {
         return result;
     };
 
-    cast(spellName, targets) {
+    cast(spellName, target) {
         const spell = findSpell(spellName, this.spells)
-        if(spell === null) {
-            return {
-                spellName: spellName,
-                hasSpell: false,
-                enoughMagicPoint: null,
-                cast: null
-            };
+        if (this.isDead()) {
+            return new UserExceptions.ActorDeadException(this);
+        } else if (spell === null) {
+            return new UserExceptions.NoTargetSpellException(`${this.name} does not have the spell of ${spellName}`);
+        } else if (spell.requiredMagicPoint > this.magicPoint.current) {
+            return new UserExceptions.NoEnoughMagicPointException(`${this.name}'s magic point (${this.magicPoint.current}) is less than required magic point (${spell.requiredMagicPoint})`)
         }
-        if(!this.enoughMagicPoint(spell)) {
-            return {
-                spellName: spellName,
-                hasSpell: true,
-                enoughMagicPoint: false,
-                cast: null
-            };
-        }
-        this.magicPoint = spell.cast(this.magicPoint);
-        return {
-            spellName: spellName,
-            hasSpell: true,
-            enoughMagicPoint: true,
-            cast: targets.map((target) => {
-                const effectWithParameter = spell.effectTo(target);
-                const effectsResult = effectWithParameter(this.parameter);
-                return User.actResult(this, target, null, effectsResult);
-            })
-        };
-    }
 
-    enoughMagicPoint(spell) {
-        return spell.requiredMagicPoint <= this.magicPoint.current;
+        this.magicPoint = spell.cast(this.magicPoint);
+        const result = spell.effectTo(target)(this.parameter);
+        if (result instanceof Error) {
+            return result;
+        }
+        return User.actResult(this, target, null, result);
     }
 
     damaged(x) {
