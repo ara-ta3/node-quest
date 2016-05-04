@@ -136,6 +136,25 @@ describe("User", () => {
             actor.cast(spell.name, target);
             assert.equal(target.hitPoint.current, 1);
         });
+
+        it("should not attack if actor is dead", () => {
+            const spell   = new Spell("fire", 0, new AttackEffect(5));
+            const actor   = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
+            const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
+            const actual = actor.cast(spell.name, target);
+            assert.ok(actual instanceof UserExceptions.ActorDeadException);
+        });
+
+        it("should not attack if target is dead", () => {
+            const spell   = new Spell("fire", 0, new AttackEffect(5));
+            const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
+            const target  = new User("id2", "B", new HitPoint(0, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
+ 
+            const actual = actor.cast(spell.name, target);
+            assert.ok(actual instanceof UserExceptions.TargetDeadException);
+        });
+
+
     });
 
     describe("isDead", () => {
@@ -152,7 +171,5 @@ describe("User", () => {
             const actor   = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
             assert.ok(actor.isDead())
         });
-
-
     });
 });
