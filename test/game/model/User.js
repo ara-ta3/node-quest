@@ -14,7 +14,7 @@ const AttackEffect = Effect.AttackEffect;
 const CureEffect   = Effect.CureEffect;
 const StatusEffect = Effect.StatusEffect;
 const STATUS_VALUES = require(`${__dirname}/../../../src/game/constant/Status.js`);
-const UserExceptions = require(`${__dirname}/../../../src/game/error/User.js`);
+const UserState = require(`${__dirname}/../../../src/game/state/User.js`);
 
 describe("User", () => {
     describe("attack", () => {
@@ -40,7 +40,7 @@ describe("User", () => {
             const actor   = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 0), equipment);
             const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), equipment);
             const actual = actor.attack(target);
-            assert.ok(actual instanceof UserExceptions.ActorDeadException);
+            assert.equal(actual ,  UserState.ActorDead);
         });
 
         it("should not attack if target is dead", () => {
@@ -48,7 +48,7 @@ describe("User", () => {
             const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 0), equipment);
             const target  = new User("id2", "B", new HitPoint(0, 10), new MagicPoint(0, 0), equipment);
             const actual = actor.attack(target);
-            assert.ok(actual instanceof UserExceptions.TargetDeadException);
+            assert.equal(actual ,  UserState.TargetDead);
         });
 
     });
@@ -118,7 +118,7 @@ describe("User", () => {
         it("should return as it does not have spell when user does not learn spell", () => {
             const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 10), emptyEquipment, emptyParameter);
             const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
-            assert.ok(actor.cast("fire", target) instanceof UserExceptions.NoTargetSpellException);
+            assert.equal(actor.cast("fire", target) ,  UserState.NoTargetSpell);
         });
 
         it("should increase target's HP when user cast cure spell", () => {
@@ -142,7 +142,7 @@ describe("User", () => {
             const actor   = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
             const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
             const actual = actor.cast(spell.name, target);
-            assert.ok(actual instanceof UserExceptions.ActorDeadException);
+            assert.equal(actual ,  UserState.ActorDead);
         });
 
         it("should not attack if target is dead", () => {
@@ -151,7 +151,7 @@ describe("User", () => {
             const target  = new User("id2", "B", new HitPoint(0, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
  
             const actual = actor.cast(spell.name, target);
-            assert.ok(actual instanceof UserExceptions.TargetDeadException);
+            assert.equal(actual, UserState.TargetDead);
         });
 
 

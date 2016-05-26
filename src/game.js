@@ -9,9 +9,9 @@ const HitRate   = require(`${__dirname}/game/model/HitRate.js`);
 const Spell     = require(`${__dirname}/game/model/Spell.js`);
 const Effect    = require(`${__dirname}/game/model/Effect.js`);
 const HitPoint  = require(`${__dirname}/game/model/HitPoint.js`);
+const UserStates= require(`${__dirname}/game/state/User.js`);
 const MagicPoint    = require(`${__dirname}/game/model/MagicPoint.js`);
 const STATUS_VALUES = require(`${__dirname}/game/constant/Status.js`);
-const UserExceptions= require(`${__dirname}/game/error/User.js`);
 
 class Game extends EventEmitter {
     constructor(minHitPoint, maxHitPoint, minMagicPoint, maxMagicPoint) {
@@ -46,5 +46,5 @@ module.exports = {
     Spell: Spell,
     Effect: Effect,
     StatusValues: STATUS_VALUES,
-    UserExceptions: UserExceptions
+    UserStates: UserStates
 }

@@ -1,4 +1,5 @@
 const StatusEffect    = require(`${__dirname}/Effect.js`).StatusEffect;
+const Symbol = require('symbol');
 
 class Spell {
     constructor(name, requiredMp, effects) {
@@ -17,9 +18,9 @@ class Spell {
             const effectWith = e.to(user);
             return effectWith(parameter)
         }).reduce((pre, cur) => {
-            if(cur instanceof Error) {
+            if(cur instanceof Symbol) {
                 return cur;
-            } else if (pre instanceof Error) {
+            } else if (pre instanceof Symbol) {
                 return pre;
             }
             return {
