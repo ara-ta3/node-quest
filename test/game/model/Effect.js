@@ -12,7 +12,7 @@ const AttackEffect = Effect.AttackEffect;
 const CureEffect   = Effect.CureEffect;
 const StatusEffect = Effect.StatusEffect;
 const STATUS_VALUES = require(`${__dirname}/../../../src/game/constant/Status.js`);
-const UserExceptions = require(`${__dirname}/../../../src/game/error/User.js`);
+const UserState = require(`${__dirname}/../../../src/game/state/User.js`);
 
 describe("Effect", () => {
     describe("effectTo", () => {
@@ -100,14 +100,14 @@ describe("Effect", () => {
             const spell   = new Spell("cure", 0, new AttackEffect(5));
             const target  = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
             const actual = spell.effectTo(target)(emptyParameter);
-            assert.ok(actual instanceof UserExceptions.TargetDeadException);
+            assert.ok(actual === UserState.TargetDead);
         });
 
         it("should return error on cure effect if target is dead", () => {
             const spell   = new Spell("cure", 0, new CureEffect(5));
             const target  = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
             const actual = spell.effectTo(target)(emptyParameter);
-            assert.ok(actual instanceof UserExceptions.TargetDeadException);
+            assert.ok(actual === UserState.TargetDead);
         });
 
         describe("when status effect is included to spell", () => {
@@ -115,14 +115,14 @@ describe("Effect", () => {
                 const spell   = new Spell("cure", 0, [new CureEffect(5), new StatusEffect(STATUS_VALUES.DEAD)]);
                 const target  = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
                 const actual = spell.effectTo(target)(emptyParameter);
-                assert.ok(!(actual instanceof UserExceptions.TargetDeadException));
+                assert.ok(!(actual === UserState.TargetDead));
             });
 
             it("and defined before cure effect should not return error", () => {
                 const spell   = new Spell("cure", 0, [new StatusEffect(STATUS_VALUES.DEAD), new CureEffect(5)]);
                 const target  = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
                 const actual = spell.effectTo(target)(emptyParameter);
-                assert.ok(!(actual instanceof UserExceptions.TargetDeadException));
+                assert.ok(!(actual === UserState.TargetDead));
             });
         });
     });
