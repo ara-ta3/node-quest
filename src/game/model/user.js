@@ -1,10 +1,11 @@
+const Symbol = require('symbol');
 const EventEmitter  = require('eventemitter2').EventEmitter2;
 const Status        = require(__dirname + "/Status.js");
 const Point         = require(__dirname + "/Point.js");
 const HitPoint      = require(__dirname + "/HitPoint.js");
 const MagicPoint    = require(__dirname + "/MagicPoint.js");
 const STATUS_VALUES = require(`${__dirname}/../constant/Status.js`);
-const UserExceptions = require(__dirname + "/../error/User.js");
+const UserState     = require(__dirname + "/../state/User.js");
 
 function findSpell(spellName, spells) {
     return spells.filter((s) => s.name === spellName).pop() || null;
@@ -35,9 +36,9 @@ class User extends EventEmitter {
 
     attack(target) {
         if(this.isDead()) {
-            return new UserExceptions.ActorDeadException(this);
+            return UserState.ActorDead;
         } else if(target.isDead()) {
-            return new UserExceptions.TargetDeadException(target);
+            return UserState.TargetDead;
         }
 
         const hit = this.equipment.weapon.hit();
@@ -54,16 +55,16 @@ class User extends EventEmitter {
     cast(spellName, target) {
         const spell = findSpell(spellName, this.spells)
         if (this.isDead()) {
-            return new UserExceptions.ActorDeadException(this);
+            return UserState.ActorDead;
         } else if (spell === null) {
-            return new UserExceptions.NoTargetSpellException(`${this.name} does not have the spell of ${spellName}`);
+            return UserState.NoTargetSpell;
         } else if (spell.requiredMagicPoint > this.magicPoint.current) {
-            return new UserExceptions.NoEnoughMagicPointException(`${this.name}'s magic point (${this.magicPoint.current}) is less than required magic point (${spell.requiredMagicPoint})`)
+            return UserState.NotEnoughMagicPoint;
         }
 
         this.magicPoint = spell.cast(this.magicPoint);
         const result = spell.effectTo(target)(this.parameter);
-        if (result instanceof Error) {
+        if (result instanceof Symbol) {
             return result;
         }
         return User.actResult(this, target, null, result);
