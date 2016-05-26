@@ -1,5 +1,3 @@
-const Symbol = require('symbol');
-
 module.exports = {
     TargetDead: Symbol.for("target is dead"),
     ActorDead: Symbol.for("actor is dead"),

@@ -1,4 +1,3 @@
-const Symbol = require('symbol');
 const EventEmitter  = require('eventemitter2').EventEmitter2;
 const Status        = require(__dirname + "/Status.js");
 const Point         = require(__dirname + "/Point.js");
@@ -64,7 +63,7 @@ class User extends EventEmitter {
 
         this.magicPoint = spell.cast(this.magicPoint);
         const result = spell.effectTo(target)(this.parameter);
-        if (result instanceof Symbol) {
+        if (typeof result === 'symbol') {
             return result;
         }
         return User.actResult(this, target, null, result);
