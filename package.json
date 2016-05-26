@@ -1,6 +1,6 @@
 {
   "name": "node-quest",
-  "version": "0.7.8",
+  "version": "0.8.0",
   "description": "",
   "main": "lib/game.js",
   "dependencies": {
