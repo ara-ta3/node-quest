@@ -8,6 +8,7 @@ function filter(v, min, max) {
 
 class MagicPoint extends EventEmitter {
     constructor(current, max) {
+        super();
         this.max = max;
         this.min = 0;
         this.current = filter(current, 0, this.max);
