@@ -4,8 +4,7 @@
   "description": "",
   "main": "lib/game.js",
   "dependencies": {
-    "eventemitter2": "^1.0.0",
-    "symbol": "^0.3.0"
+    "eventemitter2": "^1.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.6.0",
