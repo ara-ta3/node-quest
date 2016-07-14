@@ -16,7 +16,7 @@ class Weapon {
         return this.hitRate.hit();
     }
 
-    damageTo(target) {
+    damage(target) {
         const hit = this.hit();
         const critical = hit ? this.critical() : false;
         const point = hit ? Point.fromWeapon(this).toInt() * (critical ? 2 : 1) : 0;

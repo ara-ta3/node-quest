@@ -40,7 +40,7 @@ class User extends EventEmitter {
             return UserState.TargetDead;
         }
 
-        const attackResult = this.equipment.weapon.damageTo(target);
+        const attackResult = this.equipment.weapon.damage(target);
         const result = User.actResult(this, target, attackResult, null);
         attackResult.hit && target.emit("attacked", result);
         return result;
