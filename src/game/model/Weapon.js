@@ -1,14 +1,15 @@
-const Point         = require(__dirname + "/Point.js");
+const Point     = require(`${__dirname}/Point.js`);
+const Critical  = require(`${__dirname}/Critical.js`);
 
 class Weapon {
     constructor(averageOfAttack, divergenceOfAttack, hitRate, critical) {
         this.averageOfAttack = averageOfAttack;
         this.divergenceOfAttack = divergenceOfAttack;
         this.hitRate = hitRate;
-        this.critical = critical;
+        this.critical = critical || new Critical(0);
     }
 
-    critical() {
+    criticalHit() {
         return this.critical.hit();
     }
 
@@ -18,7 +19,7 @@ class Weapon {
 
     damage(target) {
         const hit = this.hit();
-        const critical = hit ? this.critical() : false;
+        const critical = hit ? this.criticalHit() : false;
         const point = hit ? Point.fromWeapon(this).toInt() * (critical ? 2 : 1) : 0;
         hit && target.damaged(point);
 
