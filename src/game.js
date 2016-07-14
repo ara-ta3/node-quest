@@ -9,6 +9,7 @@ const HitRate   = require(`${__dirname}/game/model/HitRate.js`);
 const Spell     = require(`${__dirname}/game/model/Spell.js`);
 const Effect    = require(`${__dirname}/game/model/Effect.js`);
 const HitPoint  = require(`${__dirname}/game/model/HitPoint.js`);
+const Critical  = require(`${__dirname}/game/model/Critical.js`);
 const UserStates= require(`${__dirname}/game/state/User.js`);
 const MagicPoint    = require(`${__dirname}/game/model/MagicPoint.js`);
 const STATUS_VALUES = require(`${__dirname}/game/constant/Status.js`);
@@ -43,6 +44,7 @@ module.exports = {
     Weapon: Weapon,
     Parameter: Parameter,
     HitRate: HitRate,
+    Critical: Critical,
     Spell: Spell,
     Effect: Effect,
     StatusValues: STATUS_VALUES,
