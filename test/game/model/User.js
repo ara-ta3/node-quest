@@ -28,6 +28,7 @@ describe("User", () => {
                 "actor": actor,
                 "target": target,
                 "attack": {
+                    critical: false,
                     value: 5,
                     hit: true
                 },
