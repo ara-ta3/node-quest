@@ -1,5 +1,4 @@
-const EventEmitter  = require('eventemitter2').EventEmitter2;
-
+import {EventEmitter2 as EventEmitter } from "eventemitter2"
 const User      = require(`${__dirname}/game/model/user.js`);
 const Status    = require(`${__dirname}/game/model/Status.js`);
 const Equipment = require(`${__dirname}/game/model/Equipment.js`);
@@ -13,6 +12,7 @@ const Critical  = require(`${__dirname}/game/model/Critical.js`);
 const UserStates= require(`${__dirname}/game/state/User.js`);
 const MagicPoint    = require(`${__dirname}/game/model/MagicPoint.js`);
 const STATUS_VALUES = require(`${__dirname}/game/constant/Status.js`);
+import Job from "./game/model/Job"
 
 class Game extends EventEmitter {
     constructor(minHitPoint, maxHitPoint, minMagicPoint, maxMagicPoint) {
@@ -48,5 +48,6 @@ module.exports = {
     Spell: Spell,
     Effect: Effect,
     StatusValues: STATUS_VALUES,
-    UserStates: UserStates
+    UserStates: UserStates,
+    Job: Job
 }
