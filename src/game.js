@@ -1,5 +1,5 @@
 import {EventEmitter2 as EventEmitter } from "eventemitter2"
-const User      = require(`${__dirname}/game/model/user.js`);
+const User      = require(`${__dirname}/game/model/User.js`);
 const Status    = require(`${__dirname}/game/model/Status.js`);
 const Equipment = require(`${__dirname}/game/model/Equipment.js`);
 const Weapon    = require(`${__dirname}/game/model/Weapon.js`);
