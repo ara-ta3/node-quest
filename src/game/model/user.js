@@ -1,4 +1,4 @@
-const EventEmitter  = require('eventemitter2').EventEmitter2;
+import {EventEmitter2 as EventEmitter } from "eventemitter2"
 const Status        = require(__dirname + "/Status.js");
 const Parameter     = require(__dirname + "/Parameter.js");
 const Point         = require(__dirname + "/Point.js");
@@ -6,22 +6,34 @@ const HitPoint      = require(__dirname + "/HitPoint.js");
 const MagicPoint    = require(__dirname + "/MagicPoint.js");
 const STATUS_VALUES = require(`${__dirname}/../constant/Status.js`);
 const UserState     = require(__dirname + "/../state/User.js");
+import Job from "./Job";
 
 function findSpell(spellName, spells) {
     return spells.filter((s) => s.name === spellName).pop() || null;
 }
 
 class User extends EventEmitter {
-    constructor(id, name, hp, mp, equipment, parameter = new Parameter() , spells = [], status = new Status()) {
+    constructor(
+            id,
+            name,
+            hp,
+            mp,
+            equipment,
+            parameter = new Parameter(),
+            spells = [],
+            status = new Status(),
+            job = new Job()
+            ) {
         super();
         this.id = id;
         this.name = name;
         this.hitPoint = hp;
         this.magicPoint = mp;
         this.equipment = equipment;
-        this.parameter = parameter;
+        this.defaultParameter = parameter;
         this.spells = spells;
         this.status = status;
+        this.changeJob(job);
 
         this.status.on("removed", (data) => {
             data.target === STATUS_VALUES.DEAD;
@@ -48,7 +60,7 @@ class User extends EventEmitter {
     };
 
     cast(spellName, target) {
-        const spell = findSpell(spellName, this.spells)
+        const spell = findSpell(spellName, this.spells.concat(this.job.spells))
         if (this.isDead()) {
             return UserState.ActorDead;
         } else if (spell === null) {
@@ -84,6 +96,11 @@ class User extends EventEmitter {
     isDead() {
         return this.status.isDead();
     };
+
+    changeJob(job) {
+        this.job = job;
+        this.parameter = this.defaultParameter.plus(job.parameterAdjust);
+    }
 
     static actResult(actor, target, attack, effects) {
         return {
