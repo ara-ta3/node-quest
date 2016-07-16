@@ -31,6 +31,7 @@ class User extends EventEmitter {
         this.magicPoint = mp;
         this.equipment = equipment;
         this.defaultParameter = parameter;
+        this.parameter = parameter;
         this.spells = spells;
         this.status = status;
         this.changeJob(job);
@@ -60,7 +61,7 @@ class User extends EventEmitter {
     };
 
     cast(spellName, target) {
-        const spell = findSpell(spellName, this.spells.concat(this.job.spells))
+        const spell = findSpell(spellName, this.getLearnedSpells())
         if (this.isDead()) {
             return UserState.ActorDead;
         } else if (spell === null) {
@@ -102,6 +103,10 @@ class User extends EventEmitter {
             this.job = job;
             this.parameter = this.defaultParameter.plus(job.parameterAdjust);
         }
+    }
+
+    getLearnedSpells() {
+        return this.job ? this.spells.concat(this.job.spells) : this.spells;
     }
 
     static actResult(actor, target, attack, effects) {
