@@ -1,5 +1,6 @@
 const EventEmitter  = require('eventemitter2').EventEmitter2;
 const Status        = require(__dirname + "/Status.js");
+const Parameter     = require(__dirname + "/Parameter.js");
 const Point         = require(__dirname + "/Point.js");
 const HitPoint      = require(__dirname + "/HitPoint.js");
 const MagicPoint    = require(__dirname + "/MagicPoint.js");
@@ -11,7 +12,7 @@ function findSpell(spellName, spells) {
 }
 
 class User extends EventEmitter {
-    constructor(id, name, hp, mp, equipment, parameter, spells, status) {
+    constructor(id, name, hp, mp, equipment, parameter = new Parameter() , spells = [], status = new Status()) {
         super();
         this.id = id;
         this.name = name;
@@ -19,8 +20,8 @@ class User extends EventEmitter {
         this.magicPoint = mp;
         this.equipment = equipment;
         this.parameter = parameter;
-        this.spells = spells || [];
-        this.status = status || new Status();
+        this.spells = spells;
+        this.status = status;
 
         this.status.on("removed", (data) => {
             data.target === STATUS_VALUES.DEAD;
@@ -40,7 +41,7 @@ class User extends EventEmitter {
             return UserState.TargetDead;
         }
 
-        const attackResult = this.equipment.weapon.damage(target);
+        const attackResult = this.equipment.weapon.damage(target)(this.parameter);
         const result = User.actResult(this, target, attackResult, null);
         attackResult.hit && target.emit("attacked", result);
         return result;

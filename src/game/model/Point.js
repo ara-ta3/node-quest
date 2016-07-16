@@ -13,10 +13,10 @@ class Point {
         return Math.sqrt(-2 * Math.log(1 - x1)) * Math.cos(2 * Math.PI * x2);
     };
 
-    static fromWeapon(weapon) {
+    static fromWeaponAndAttackParameter(weapon, parameter) {
         return new Point(
-            weapon.averageOfAttack,
-            weapon.divergenceOfAttack
+            weapon.averageOfAttack + parameter.attackPower,
+            Math.max(weapon.divergenceOfAttack - parameter.skillPoint, 0)
         );
     }
 

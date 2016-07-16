@@ -18,12 +18,16 @@ class Weapon {
     }
 
     damage(target) {
-        const hit = this.hit();
-        const critical = hit ? this.criticalHit() : false;
-        const point = hit ? Point.fromWeapon(this).toInt() * (critical ? 2 : 1) : 0;
-        hit && target.damaged(point);
+        return (actorParameter) => {
+            const hit = this.hit();
+            const critical = hit ? this.criticalHit() : false;
+            const point = hit ? 
+                Point.fromWeaponAndAttackParameter(this, actorParameter).toInt() * (critical ? 2 : 1):
+                0;
+            hit && target.damaged(point);
 
-        return Weapon.attackResult(point, hit, critical);
+            return Weapon.attackResult(point, hit, critical);
+        }
     }
 
     static attackResult(damage, hit, critical) {
