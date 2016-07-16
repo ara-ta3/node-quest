@@ -22,7 +22,7 @@ class User extends EventEmitter {
             parameter = new Parameter(),
             spells = [],
             status = new Status(),
-            job = new Job()
+            job = null
             ) {
         super();
         this.id = id;
@@ -98,8 +98,10 @@ class User extends EventEmitter {
     };
 
     changeJob(job) {
-        this.job = job;
-        this.parameter = this.defaultParameter.plus(job.parameterAdjust);
+        if ( job ) {
+            this.job = job;
+            this.parameter = this.defaultParameter.plus(job.parameterAdjust);
+        }
     }
 
     static actResult(actor, target, attack, effects) {
