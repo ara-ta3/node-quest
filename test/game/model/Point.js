@@ -6,7 +6,7 @@ const Parameter = require(`${__dirname}/../../../src/game/model/Parameter.js`);
 describe("Point", () => {
     describe("fromWeaponAndAttackParameter", () => {
         it("should return averageOfAttack + attackPower when divergenceOfAttack and skillPoint is 0", () => {
-            const p = Point.fromWeaponAndAttackParameter(new Weapon(100, 0), new Parameter(0, 0, 50, 0));
+            const p = Point.fromWeaponAndAttackParameter(new Weapon("empty-hands", 100, 0), new Parameter(0, 0, 50, 0));
             assert.equal(p.toInt(), 150)
         });
     });

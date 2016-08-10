@@ -19,7 +19,7 @@ const UserState = require(`${__dirname}/../../../src/game/state/User.js`);
 describe("User", () => {
     describe("attack", () => {
         it("should decrease target HP", () => {
-            const equipment = new Equipment(new Weapon(5, 0, new HitRate(100)));
+            const equipment = new Equipment(new Weapon("empty-hands", 5, 0, new HitRate(100)));
             const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 0), equipment);
             const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), equipment);
             const actual = actor.attack(target);
@@ -37,7 +37,7 @@ describe("User", () => {
         });
 
         it("should not attack if actor is dead", () => {
-            const equipment = new Equipment(new Weapon(5, 0, new HitRate(100)));
+            const equipment = new Equipment(new Weapon("empty-hands", 5, 0, new HitRate(100)));
             const actor   = new User("id1", "A", new HitPoint(0, 10), new MagicPoint(0, 0), equipment);
             const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), equipment);
             const actual = actor.attack(target);
@@ -45,7 +45,7 @@ describe("User", () => {
         });
 
         it("should not attack if target is dead", () => {
-            const equipment = new Equipment(new Weapon(5, 0, new HitRate(100)));
+            const equipment = new Equipment(new Weapon("empty-hands", 5, 0, new HitRate(100)));
             const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(0, 0), equipment);
             const target  = new User("id2", "B", new HitPoint(0, 10), new MagicPoint(0, 0), equipment);
             const actual = actor.attack(target);
@@ -55,7 +55,7 @@ describe("User", () => {
     });
 
     describe("cast", () => {
-        const emptyEquipment = new Equipment(new Weapon(0, 0, new HitRate(100)));
+        const emptyEquipment = new Equipment(new Weapon("empty-hands", 0, 0, new HitRate(100)));
         const emptyParameter = new Parameter(0, 0);
 
         it("should return result with specific format", () => {
@@ -159,7 +159,7 @@ describe("User", () => {
     });
 
     describe("isDead", () => {
-        const emptyEquipment = new Equipment(new Weapon(0, 0, new HitRate(100)));
+        const emptyEquipment = new Equipment(new Weapon("empty-hands", 0, 0, new HitRate(100)));
         const emptyParameter = new Parameter(0, 0);
 
         it("should return true when user's HP become empty", () => {
