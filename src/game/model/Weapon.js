@@ -2,7 +2,8 @@ const Point     = require(`${__dirname}/Point.js`);
 const Critical  = require(`${__dirname}/Critical.js`);
 
 class Weapon {
-    constructor(averageOfAttack, divergenceOfAttack, hitRate, critical) {
+    constructor(name, averageOfAttack, divergenceOfAttack, hitRate, critical) {
+        this.name = name;
         this.averageOfAttack = averageOfAttack;
         this.divergenceOfAttack = divergenceOfAttack;
         this.hitRate = hitRate;
