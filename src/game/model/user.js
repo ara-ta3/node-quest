@@ -109,12 +109,13 @@ class User extends EventEmitter {
         return this.job ? this.spells.concat(this.job.spells) : this.spells;
     }
 
-    static actResult(actor, target, attack, effects) {
+    static actResult(actor, target, attack, effects, sideEffects) {
         return {
             actor: actor,
             target: target,
             attack: attack,
-            effects: effects
+            effects: effects,
+            sideEffects: sideEffects
         }
     }
 }

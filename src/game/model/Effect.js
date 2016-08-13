@@ -8,9 +8,10 @@ class Effect {
 }
 
 class AttackEffect extends Effect {
-    constructor(defaultPower) {
+    constructor(defaultPower, sideEffects) {
         super();
         this.defaultPower = defaultPower;
+        this.sideEffects = sideEffects ? (Array.isArray(sideEffects) ? sideEffects : [sideEffects]) : [];
     }
 
     to(targetUser) {
@@ -36,6 +37,7 @@ class CureEffect extends Effect {
     constructor(defaultPower) {
         super();
         this.defaultPower = defaultPower;
+        this.sideEffects = sideEffects ? (Array.isArray(sideEffects) ? sideEffects : [sideEffects]) : [];
     }
 
     to(targetUser) {
@@ -61,6 +63,7 @@ class StatusEffect extends Effect {
     constructor(targetStatus) {
         super();
         this.targetStatus = targetStatus;
+        this.sideEffects = sideEffects ? (Array.isArray(sideEffects) ? sideEffects : [sideEffects]) : [];
     }
 
     to(targetUser) {
