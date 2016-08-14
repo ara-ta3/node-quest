@@ -27,7 +27,8 @@ describe("Effect", () => {
                 "attack": 5,
                 "cure": null,
                 "effects": [{
-                    "defaultPower": 5
+                    "defaultPower": 5,
+                    "sideEffects": []
                 }],
                 "status": []
             });
@@ -42,7 +43,8 @@ describe("Effect", () => {
                 "attack": null,
                 "cure": 5,
                 "effects": [{
-                    "defaultPower": 5
+                    "defaultPower": 5,
+                    "sideEffects": []
                 }],
                 "status": []
             });
@@ -57,7 +59,8 @@ describe("Effect", () => {
                 "attack": null,
                 "cure": null,
                 "effects": [{
-                    "targetStatus": STATUS_VALUES.DEAD
+                    "targetStatus": STATUS_VALUES.DEAD,
+                    "sideEffects": []
                 }],
                 "status": [{
                     "kind": STATUS_VALUES.DEAD,
@@ -79,10 +82,12 @@ describe("Effect", () => {
                 "cure": 500,
                 "effects": [
                 {
-                    "targetStatus": STATUS_VALUES.DEAD
+                    "targetStatus": STATUS_VALUES.DEAD,
+                    "sideEffects": []
                 },
                 {
-                    "defaultPower": 500
+                    "defaultPower": 500,
+                    "sideEffects": []
                 }
 
                 ],

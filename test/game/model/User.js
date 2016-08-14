@@ -71,7 +71,8 @@ describe("User", () => {
                     "attack": 5,
                     "cure": null,
                     "effects": [{
-                        "defaultPower": 5
+                        "defaultPower": 5,
+                        "sideEffects": []
                     }],
                     "status": []
                 }

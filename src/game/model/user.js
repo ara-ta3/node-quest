@@ -114,8 +114,7 @@ class User extends EventEmitter {
             actor: actor,
             target: target,
             attack: attack,
-            effects: effects,
-            sideEffects: sideEffects
+            effects: effects
         }
     }
 }
