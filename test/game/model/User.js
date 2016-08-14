@@ -13,6 +13,8 @@ const MagicPoint   = require(`${__dirname}/../../../src/game/model/MagicPoint.js
 const AttackEffect = Effect.AttackEffect;
 const CureEffect   = Effect.CureEffect;
 const StatusEffect = Effect.StatusEffect;
+const MindAttackEffect =  Effect.MindAttackEffect
+const MindCureEffect =  Effect.MindCureEffect
 const STATUS_VALUES = require(`${__dirname}/../../../src/game/constant/Status.js`);
 const UserState = require(`${__dirname}/../../../src/game/state/User.js`);
 import EffectFeedback from "../../../src/game/model/effect/Feedback"
@@ -180,6 +182,44 @@ describe("User", () => {
             assert.equal(actor.hitPoint.current, 10);
             assert.deepEqual(result.feedbacks, [new FeedbackResult(0, 5)]);
         });
+
+        it("should decrease target's MP when spell has mind attack effect", () => {
+            const spell   = new Spell("some spell", 0, new MindAttackEffect(20));
+            const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(100, 100), emptyEquipment, emptyParameter, [spell]);
+            const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(100, 100), emptyEquipment, emptyParameter);
+            actor.cast(spell.name, target);
+
+            assert.equal(target.magicPoint.current, 80);
+        });
+
+        it("should decrease target's MP and increase actor's MP when spell has mind attack effect and cure feedback", () => {
+            class MindCureFeedback extends EffectFeedback {
+                apply(castResult) {
+                    return (actor) => { 
+                        const result = actor.mindCured(castResult.mindAttack.value || 0);
+                        return new FeedbackResult(0, 0, result.value, 0);
+                    }
+                }
+            }
+            const spell   = new Spell("some spell", 0, new MindAttackEffect(20, new MindCureFeedback()));
+            const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(80, 100), emptyEquipment, emptyParameter, [spell]);
+            const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(100, 100), emptyEquipment, emptyParameter);
+            actor.cast(spell.name, target);
+
+            assert.equal(target.magicPoint.current, 80);
+            assert.equal(actor.magicPoint.current, 100);
+        });
+
+        it("should increase target's MP when spell has mind attack effect", () => {
+            const spell   = new Spell("some spell", 0, new MindCureEffect(20));
+            const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(80, 100), emptyEquipment, emptyParameter, [spell]);
+            const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(80, 100), emptyEquipment, emptyParameter);
+            actor.cast(spell.name, target);
+
+            assert.equal(target.magicPoint.current, 100);
+        });
+
+
     });
 
     describe("isDead", () => {
