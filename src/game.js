@@ -13,6 +13,8 @@ const UserStates= require(`${__dirname}/game/state/User.js`);
 const MagicPoint    = require(`${__dirname}/game/model/MagicPoint.js`);
 const STATUS_VALUES = require(`${__dirname}/game/constant/Status.js`);
 import Job from "./game/model/Job"
+import Feedback from "./game/model/effect/Feedback"
+import FeedbackResult from "./game/model/effect/FeedbackResult"
 
 class Game extends EventEmitter {
     constructor(minHitPoint, maxHitPoint, minMagicPoint, maxMagicPoint) {
@@ -49,5 +51,7 @@ module.exports = {
     Effect: Effect,
     StatusValues: STATUS_VALUES,
     UserStates: UserStates,
-    Job: Job
+    Job: Job,
+    Feedback: Feedback,
+    FeedbackResult: FeedbackResult
 }
