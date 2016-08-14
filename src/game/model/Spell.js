@@ -22,6 +22,7 @@ class Spell {
             } else if (typeof pre === 'symbol') {
                 return pre;
             }
+            // TODO add cast result class 
             return {
                 "attack": sumUpIfExists(pre.attack, cur.attack.value),
                 "cure": sumUpIfExists(pre.cure, cur.cure.value),
@@ -29,13 +30,15 @@ class Spell {
                     kind: cur.status.target,
                     effective: cur.status.effective
                 }]).filter((s) => s.kind !== undefined),
-                "effects": pre.effects.concat([cur.effect])
+                "effects": pre.effects.concat([cur.effect]),
+                "feedbacks": pre.feedbacks.concat(cur.effect.feedbacks.map(f => f.apply(cur)))
             };
         }, {
             "attack": null,
             "cure": null,
             "status": [],
-            "effects": []
+            "effects": [],
+            "feedbacks": []
         })
     }
 }

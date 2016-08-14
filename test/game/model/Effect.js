@@ -27,9 +27,11 @@ describe("Effect", () => {
                 "attack": 5,
                 "cure": null,
                 "effects": [{
-                    "defaultPower": 5
+                    "defaultPower": 5,
+                    "feedbacks": []
                 }],
-                "status": []
+                "status": [],
+                "feedbacks": []
             });
             assert.ok(actual.effects[0] instanceof AttackEffect)
         });
@@ -42,9 +44,11 @@ describe("Effect", () => {
                 "attack": null,
                 "cure": 5,
                 "effects": [{
-                    "defaultPower": 5
+                    "defaultPower": 5,
+                    "feedbacks": []
                 }],
-                "status": []
+                "status": [],
+                "feedbacks": []
             });
             assert.ok(actual.effects[0] instanceof CureEffect)
         });
@@ -57,12 +61,14 @@ describe("Effect", () => {
                 "attack": null,
                 "cure": null,
                 "effects": [{
-                    "targetStatus": STATUS_VALUES.DEAD
+                    "targetStatus": STATUS_VALUES.DEAD,
+                    "feedbacks": []
                 }],
                 "status": [{
                     "kind": STATUS_VALUES.DEAD,
                     "effective": true
-                }]
+                }],
+                "feedbacks": []
             });
             assert.ok(actual.effects[0] instanceof StatusEffect)
         });
@@ -79,18 +85,19 @@ describe("Effect", () => {
                 "cure": 500,
                 "effects": [
                 {
-                    "targetStatus": STATUS_VALUES.DEAD
+                    "targetStatus": STATUS_VALUES.DEAD,
+                    "feedbacks": []
                 },
                 {
-                    "defaultPower": 500
+                    "defaultPower": 500,
+                    "feedbacks": []
                 }
-
                 ],
                 "status": [{
                     "kind": STATUS_VALUES.DEAD,
                     "effective": true
-                        
-                }]
+                }],
+                "feedbacks": []
             });
             assert.ok(actual.effects[0] instanceof StatusEffect)
 

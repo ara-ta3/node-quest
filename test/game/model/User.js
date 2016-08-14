@@ -15,6 +15,8 @@ const CureEffect   = Effect.CureEffect;
 const StatusEffect = Effect.StatusEffect;
 const STATUS_VALUES = require(`${__dirname}/../../../src/game/constant/Status.js`);
 const UserState = require(`${__dirname}/../../../src/game/state/User.js`);
+import EffectFeedback from "../../../src/game/model/effect/Feedback"
+import FeedbackResult from "../../../src/game/model/effect/FeedbackResult"
 
 describe("User", () => {
     describe("attack", () => {
@@ -32,7 +34,8 @@ describe("User", () => {
                     value: 5,
                     hit: true
                 },
-                effects: null
+                effects: null,
+                "feedbacks": null
             });
         });
 
@@ -71,10 +74,13 @@ describe("User", () => {
                     "attack": 5,
                     "cure": null,
                     "effects": [{
-                        "defaultPower": 5
+                        "defaultPower": 5,
+                        "feedbacks": []
                     }],
+                    "feedbacks": [],
                     "status": []
-                }
+                },
+                "feedbacks": []
             });
         });
 
@@ -155,7 +161,25 @@ describe("User", () => {
             assert.equal(actual, UserState.TargetDead);
         });
 
+        it("should decrease target's HP and increase actor's HP when spell has attack effect and cure feedback", () => {
+            class CureFeedback extends EffectFeedback {
+                apply(castResult) {
+                    return (actor) => { 
+                        const result = actor.cured(castResult.attack.value);
+                        return new FeedbackResult(0, result.value);
+                    }
+                }
+            }
 
+            const spell   = new Spell("drain", 0, new AttackEffect(5, new CureFeedback()));
+            const actor   = new User("id1", "A", new HitPoint(5, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter, [spell]);
+            const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(0, 0), emptyEquipment, emptyParameter);
+            const result  = actor.cast(spell.name, target);
+
+            assert.equal(target.hitPoint.current, 5);
+            assert.equal(actor.hitPoint.current, 10);
+            assert.deepEqual(result.feedbacks, [new FeedbackResult(0, 5)]);
+        });
     });
 
     describe("isDead", () => {
