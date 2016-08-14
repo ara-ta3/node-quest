@@ -95,6 +95,22 @@ class User extends EventEmitter {
         };
     };
 
+    mindDamaged(x) {
+        this.magicPoint.change(this.magicPoint.current - x);
+        return {
+            target: this,
+            value: x
+        };
+    }
+
+    mindCured(x) {
+        this.magicPoint.change(this.magicPoint.current + x);
+        return {
+            target: this,
+            value: x
+        };
+    }
+
     isDead() {
         return this.status.isDead();
     };

@@ -22,14 +22,7 @@ class AttackEffect extends Effect {
             }
             const p = Point.fromMindParameter(actorParameter).toInt() + this.defaultPower;
             targetUser.damaged(p);
-            return {
-                effect: this,
-                attack: {
-                    value: p
-                },
-                cure: {},
-                status: {}
-            }
+            return EffectResult.factory(this, p, null, null, null, null);
         }
     };
 }
@@ -48,14 +41,7 @@ class CureEffect extends Effect {
             }
             const p = Point.fromMindParameter(actorParameter).toInt() + this.defaultPower;
             targetUser.cured(p);
-            return {
-                effect: this,
-                attack: {},
-                cure: {
-                    value: p
-                },
-                status: {}
-            }
+            return EffectResult.factory(this, null, p, null, null, null);
         }
     }
 }
@@ -71,21 +57,71 @@ class StatusEffect extends Effect {
         return (actorParameter) => {
             const effective = targetUser.status.has(this.targetStatus);
             targetUser.status.clear(this.targetStatus);
-            return {
-                effect: this,
-                attack: {},
-                cure: {},
-                status: {
-                    target: this.targetStatus,
-                    effective: effective
-                }
-            }
+            return EffectResult.factory(this, null, null, null, null, {
+                target: this.targetStatus,
+                effective: effective
+            });
         }
     }
+}
+
+class MindAttackEffect extends Effect {
+    constructor(defaultPower, feedbacks) {
+        super();
+        this.defaultPower = defaultPower;
+        this.feedbacks = (feedbacks ? (Array.isArray(feedbacks) ? feedbacks : [feedbacks]) : []);
+    }
+
+    to(targetUser) {
+        return (actorParameter) => {
+            if(targetUser.isDead()) {
+                return UserState.TargetDead;
+            }
+            const p = Point.fromMindParameter(actorParameter).toInt() + this.defaultPower;
+            targetUser.mindDamaged(p);
+            return EffectResult.factory(this, null, null, p, null, null);
+        }
+    };
+}
+
+class MindCureEffect extends Effect {
+    constructor(defaultPower, feedbacks) {
+        super();
+        this.defaultPower = defaultPower;
+        this.feedbacks = (feedbacks ? (Array.isArray(feedbacks) ? feedbacks : [feedbacks]) : []);
+    }
+
+    to(targetUser) {
+        return (actorParameter) => {
+            if(targetUser.isDead()) {
+                return UserState.TargetDead;
+            }
+            const p = Point.fromMindParameter(actorParameter).toInt() + this.defaultPower;
+            targetUser.mindCured(p);
+            return EffectResult.factory(this, null, null, null, p, null);
+        }
+    };
+}
+
+
+class EffectResult {
+    static factory(effect, attack, cure, mindAttack, mindCured, status) {
+        return {
+            effect: effect,
+            attack: attack ? {value: attack} : {},
+            cure: cure ? {value: cure} : {},
+            mindAttack: mindAttack ? {value: mindAttack} : {},
+            mindCured: mindCured ? {value: mindCured} : {},
+            status: status ? status : {}
+        };
+    }
+
 }
 
 module.exports = {
     AttackEffect: AttackEffect,
     CureEffect: CureEffect,
-    StatusEffect: StatusEffect
+    StatusEffect: StatusEffect,
+    MindAttackEffect: MindAttackEffect,
+    MindCureEffect: MindCureEffect
 }
