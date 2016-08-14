@@ -32,7 +32,8 @@ describe("User", () => {
                     value: 5,
                     hit: true
                 },
-                effects: null
+                effects: null,
+                sideEffects: null
             });
         });
 
@@ -73,6 +74,12 @@ describe("User", () => {
                     "effects": [{
                         "defaultPower": 5
                     }],
+                    "status": []
+                },
+                "sideEffects": {
+                    "attack": null,
+                    "cure": null,
+                    "effects": [],
                     "status": []
                 }
             });

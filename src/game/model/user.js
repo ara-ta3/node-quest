@@ -55,7 +55,7 @@ class User extends EventEmitter {
         }
 
         const attackResult = this.equipment.weapon.damage(target)(this.parameter);
-        const result = User.actResult(this, target, attackResult, null);
+        const result = User.actResult(this, target, attackResult, null, null);
         attackResult.hit && target.emit("attacked", result);
         return result;
     };
@@ -75,7 +75,9 @@ class User extends EventEmitter {
         if (typeof result === 'symbol') {
             return result;
         }
-        return User.actResult(this, target, null, result);
+        const sideEffectResult = spell.applySideEffect(this);
+
+        return User.actResult(this, target, null, result, sideEffectResult);
     }
 
     damaged(x) {
@@ -109,12 +111,13 @@ class User extends EventEmitter {
         return this.job ? this.spells.concat(this.job.spells) : this.spells;
     }
 
-    static actResult(actor, target, attack, effects) {
+    static actResult(actor, target, attack, effects, sideEffects) {
         return {
             actor: actor,
             target: target,
             attack: attack,
-            effects: effects
+            effects: effects,
+            sideEffects: sideEffects
         }
     }
 }
