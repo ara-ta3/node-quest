@@ -1,5 +1,6 @@
 const Point  = require(__dirname + "/Point.js");
 const UserState = require(__dirname + "/../state/User.js");
+import EffectFeedback from "./effect/Feedback";
 
 class Effect {
     to(user) {
@@ -8,9 +9,10 @@ class Effect {
 }
 
 class AttackEffect extends Effect {
-    constructor(defaultPower) {
+    constructor(defaultPower, feedbacks) {
         super();
         this.defaultPower = defaultPower;
+        this.feedbacks = (feedbacks ? (Array.isArray(feedbacks) ? feedbacks : [feedbacks]) : []);
     }
 
     to(targetUser) {
@@ -33,9 +35,10 @@ class AttackEffect extends Effect {
 }
 
 class CureEffect extends Effect {
-    constructor(defaultPower) {
+    constructor(defaultPower, feedbacks) {
         super();
         this.defaultPower = defaultPower;
+        this.feedbacks = (feedbacks ? (Array.isArray(feedbacks) ? feedbacks : [feedbacks]) : []);
     }
 
     to(targetUser) {
@@ -58,9 +61,10 @@ class CureEffect extends Effect {
 }
 
 class StatusEffect extends Effect {
-    constructor(targetStatus) {
+    constructor(targetStatus, feedbacks) {
         super();
         this.targetStatus = targetStatus;
+        this.feedbacks = (feedbacks ? (Array.isArray(feedbacks) ? feedbacks : [feedbacks]) : []);
     }
 
     to(targetUser) {
