@@ -1,5 +1,5 @@
 const Point     = require(`${__dirname}/Point.js`);
-const Critical  = require(`${__dirname}/Critical.js`);
+import Critical from './Critical';
 
 class Weapon {
     constructor(name, averageOfAttack, divergenceOfAttack, hitRate, critical) {
