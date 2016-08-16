@@ -13,11 +13,12 @@
     "babel-register": "^6.6.5",
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
+    "espower-typescript": "^5.0.1",
     "mocha": "^2.4.5",
     "power-assert": "^1.2.0"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha --compilers js:babel-register  --recursive ./test/ --use_strict",
+    "test": "./node_modules/.bin/mocha --compilers js:babel-register,ts:espower-typescript/guess  --recursive ./test/ --use_strict",
     "test-watch": "./node_modules/.bin/mocha --compilers js:babel-register  --recursive ./test/ --use_strict --watch",
     "build": "./node_modules/.bin/babel src --out-dir lib --source-maps-inline --presets es2015"
   },
