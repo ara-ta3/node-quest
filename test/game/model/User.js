@@ -192,6 +192,16 @@ describe("User", () => {
             assert.equal(target.magicPoint.current, 80);
         });
 
+        it("should decrease target's MP when spell has mind attack effect with damage adjust", () => {
+            const spell   = new Spell("some spell", 0, new MindAttackEffect(20, [], (x) => x / 10));
+            const actor   = new User("id1", "A", new HitPoint(10, 10), new MagicPoint(100, 100), emptyEquipment, emptyParameter, [spell]);
+            const target  = new User("id2", "B", new HitPoint(10, 10), new MagicPoint(100, 100), emptyEquipment, emptyParameter);
+            actor.cast(spell.name, target);
+
+            assert.equal(target.magicPoint.current, 98);
+        });
+
+
         it("should decrease target's MP and increase actor's MP when spell has mind attack effect and cure feedback", () => {
             class MindCureFeedback extends EffectFeedback {
                 apply(castResult) {

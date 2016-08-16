@@ -2,6 +2,10 @@ const Point  = require(__dirname + "/Point.js");
 const UserState = require(__dirname + "/../state/User.js");
 import EffectFeedback from "./effect/Feedback";
 
+function identify(x) {
+    return x;
+}
+
 class Effect {
     to(user) {
         throw new Error("not implemented error");
@@ -66,10 +70,11 @@ class StatusEffect extends Effect {
 }
 
 class MindAttackEffect extends Effect {
-    constructor(defaultPower, feedbacks) {
+    constructor(defaultPower, feedbacks, damageAdjust) {
         super();
         this.defaultPower = defaultPower;
         this.feedbacks = (feedbacks ? (Array.isArray(feedbacks) ? feedbacks : [feedbacks]) : []);
+        this.damageAdjust = damageAdjust || identify;
     }
 
     to(targetUser) {
@@ -77,7 +82,7 @@ class MindAttackEffect extends Effect {
             if(targetUser.isDead()) {
                 return UserState.TargetDead;
             }
-            const p = Point.fromMindParameter(actorParameter).toInt() + this.defaultPower;
+            const p = this.damageAdjust(Point.fromMindParameter(actorParameter).toInt() + this.defaultPower);
             targetUser.mindDamaged(p);
             return EffectResult.factory(this, null, null, p, null, null);
         }
@@ -85,10 +90,11 @@ class MindAttackEffect extends Effect {
 }
 
 class MindCureEffect extends Effect {
-    constructor(defaultPower, feedbacks) {
+    constructor(defaultPower, feedbacks, damageAdjust) {
         super();
         this.defaultPower = defaultPower;
         this.feedbacks = (feedbacks ? (Array.isArray(feedbacks) ? feedbacks : [feedbacks]) : []);
+        this.damageAdjust = damageAdjust || identify;
     }
 
     to(targetUser) {
@@ -96,7 +102,7 @@ class MindCureEffect extends Effect {
             if(targetUser.isDead()) {
                 return UserState.TargetDead;
             }
-            const p = Point.fromMindParameter(actorParameter).toInt() + this.defaultPower;
+            const p = this.damageAdjust(Point.fromMindParameter(actorParameter).toInt() + this.defaultPower);
             targetUser.mindCured(p);
             return EffectResult.factory(this, null, null, null, p, null);
         }
