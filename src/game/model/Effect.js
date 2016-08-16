@@ -111,13 +111,13 @@ class MindCureEffect extends Effect {
 
 
 class EffectResult {
-    static factory(effect, attack, cure, mindAttack, mindCured, status) {
+    static factory(effect, attack, cure, mindAttack, mindCure, status) {
         return {
             effect: effect,
             attack: attack ? {value: attack} : {},
             cure: cure ? {value: cure} : {},
             mindAttack: mindAttack ? {value: mindAttack} : {},
-            mindCured: mindCured ? {value: mindCured} : {},
+            mindCure: mindCure ? {value: mindCure} : {},
             status: status ? status : {}
         };
     }
