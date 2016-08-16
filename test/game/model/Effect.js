@@ -26,6 +26,8 @@ describe("Effect", () => {
             assert.deepEqual(actual, {
                 "attack": 5,
                 "cure": null,
+                "mindAttack": null,
+                "mindCure": null,
                 "effects": [{
                     "defaultPower": 5,
                     "feedbacks": []
@@ -43,6 +45,8 @@ describe("Effect", () => {
             assert.deepEqual(actual, {
                 "attack": null,
                 "cure": 5,
+                "mindAttack": null,
+                "mindCure": null,
                 "effects": [{
                     "defaultPower": 5,
                     "feedbacks": []
@@ -60,6 +64,8 @@ describe("Effect", () => {
             assert.deepEqual(actual, {
                 "attack": null,
                 "cure": null,
+                "mindAttack": null,
+                "mindCure": null,
                 "effects": [{
                     "targetStatus": STATUS_VALUES.DEAD,
                     "feedbacks": []
@@ -83,6 +89,8 @@ describe("Effect", () => {
             assert.deepEqual(actual, {
                 "attack": null,
                 "cure": 500,
+                "mindAttack": null,
+                "mindCure": null,
                 "effects": [
                 {
                     "targetStatus": STATUS_VALUES.DEAD,

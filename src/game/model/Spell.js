@@ -26,6 +26,8 @@ class Spell {
             return {
                 "attack": sumUpIfExists(pre.attack, cur.attack.value),
                 "cure": sumUpIfExists(pre.cure, cur.cure.value),
+                "mindAttack": sumUpIfExists(pre.mindAttack, cur.mindAttack.value),
+                "mindCure": sumUpIfExists(pre.mindCure, cur.mindCure.value),
                 "status": pre.status.concat([{
                     kind: cur.status.target,
                     effective: cur.status.effective
@@ -36,6 +38,8 @@ class Spell {
         }, {
             "attack": null,
             "cure": null,
+            "mindAttack": null,
+            "mindCure": null,
             "status": [],
             "effects": [],
             "feedbacks": []
