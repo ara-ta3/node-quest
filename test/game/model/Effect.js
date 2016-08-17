@@ -1,5 +1,5 @@
 const assert = require('power-assert');
-const User      = require(`${__dirname}/../../../src/game/model/user.js`);
+const User      = require(`${__dirname}/../../../src/game/model/User.js`);
 const Equipment = require(`${__dirname}/../../../src/game/model/Equipment.js`);
 const Weapon    = require(`${__dirname}/../../../src/game/model/Weapon.js`);
 const Parameter = require(`${__dirname}/../../../src/game/model/Parameter.js`);
