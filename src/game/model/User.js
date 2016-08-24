@@ -53,11 +53,12 @@ class User extends EventEmitter {
         } else if(target.isDead()) {
             return UserState.TargetDead;
         }
-
-        const attackResult = this.equipment.weapon.damage(target)(this.parameter);
-        const result = User.actResult(this, target, attackResult, null, null);
-        attackResult.hit && target.emit("attacked", result);
-        return result;
+        return this.status.effectsApplied(() => {
+            const attackResult = this.equipment.weapon.damage(target)(this.parameter);
+            const result = User.actResult(this, target, attackResult, null, null);
+            attackResult.hit && target.emit("attacked", result);
+            return result;
+        });
     };
 
     cast(spellName, target) {
@@ -69,14 +70,15 @@ class User extends EventEmitter {
         } else if (spell.requiredMagicPoint > this.magicPoint.current) {
             return UserState.NotEnoughMagicPoint;
         }
-
-        this.magicPoint = spell.cast(this.magicPoint);
-        const result = spell.effectTo(target)(this.parameter);
-        if (typeof result === 'symbol') {
-            return result;
-        }
-        const feedbackResults = result.feedbacks.map((f) => f(this));
-        return User.actResult(this, target, null, result, feedbackResults);
+        return this.status.effectsApplied(() => {
+            this.magicPoint = spell.cast(this.magicPoint);
+            const result = spell.effectTo(target)(this.parameter);
+            if (typeof result === 'symbol') {
+                return result;
+            }
+            const feedbackResults = result.feedbacks.map((f) => f(this));
+            return User.actResult(this, target, null, result, feedbackResults);
+        });
     }
 
     damaged(x) {

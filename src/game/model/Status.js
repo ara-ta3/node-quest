@@ -30,6 +30,10 @@ class Status extends EventEmitter {
     isDead() {
         return this.has(STATUS_VALUES.DEAD)
     }
+
+    effectsApplied(fn) {
+        return fn();
+    }
 }
 
 module.exports = Status;
