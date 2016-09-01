@@ -1,7 +1,7 @@
 const assert = require('power-assert');
-const Point  = require(`${__dirname}/../../../src/game/model/Point.js`);
-const Weapon = require(`${__dirname}/../../../src/game/model/Weapon.js`);
-const Parameter = require(`${__dirname}/../../../src/game/model/Parameter.js`);
+import Point from "../../../src/game/model/Point"
+import Weapon from "../../../src/game/model/Weapon"
+import Parameter from "../../../src/game/model/Parameter"
 
 describe("Point", () => {
     describe("fromWeaponAndAttackParameter", () => {

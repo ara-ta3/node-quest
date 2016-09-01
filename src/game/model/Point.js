@@ -3,7 +3,7 @@
 import Weapon from "./Weapon"
 import Parameter from "./Parameter"
 
-class Point {
+export default class Point {
     average: number
     sigma: number
 
@@ -34,5 +34,3 @@ class Point {
         )
     }
 }
-
-module.exports = Point;
