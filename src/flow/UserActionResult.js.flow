@@ -1,0 +1,12 @@
+// @flow
+import User from "../game/model/User"
+import {Effect} from "../game/model/Effect"
+import Feedback from "../game/model/effect/Feedback"
+
+export type UserActionResult = {
+    actor: User;
+    target: User;
+    attack: ?UserAttackResult;
+    effects: ?Array<Effect>;
+    feedbacks: ?Array<Feedback>;
+}

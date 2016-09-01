@@ -1,9 +1,11 @@
+// @flow
 class HitRate {
-    constructor(rate) {
+    rate: number
+    constructor(rate: number) {
         this.rate = rate;
     }
 
-    hit() {
+    hit(): bool {
         const rand = Math.random() * 100;
         return rand < this.rate;
     }

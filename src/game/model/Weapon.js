@@ -1,8 +1,24 @@
-const Point     = require(`${__dirname}/Point.js`);
-const Critical  = require(`${__dirname}/Critical.js`);
+// @flow
+import Point from "./Point"
+import Critical from "./Critical"
+import HitRate from "./HitRate"
+import User from "./User"
+import Parameter from "./Parameter"
 
 class Weapon {
-    constructor(name, averageOfAttack, divergenceOfAttack, hitRate, critical) {
+    name: string
+    averageOfAttack: number
+    divergenceOfAttack: number
+    hitRate: HitRate
+    critical: Critical
+
+    constructor(
+        name: string, 
+        averageOfAttack: number,
+        divergenceOfAttack: number,
+        hitRate: HitRate,
+        critical: Critical
+    ) {
         this.name = name;
         this.averageOfAttack = averageOfAttack;
         this.divergenceOfAttack = divergenceOfAttack;
@@ -10,16 +26,16 @@ class Weapon {
         this.critical = critical || new Critical(0);
     }
 
-    criticalHit() {
+    criticalHit(): bool {
         return this.critical.hit();
     }
 
-    hit() {
+    hit(): bool {
         return this.hitRate.hit();
     }
 
-    damage(target) {
-        return (actorParameter) => {
+    damage(target: User): (p: Parameter) => UserAttackResult {
+        return (actorParameter: Parameter) => {
             const hit = this.hit();
             const critical = hit ? this.criticalHit() : false;
             const point = hit ? 
@@ -31,7 +47,7 @@ class Weapon {
         }
     }
 
-    static attackResult(damage, hit, critical) {
+    static attackResult(damage: number, hit: bool, critical: bool): UserAttackResult {
         return {
             value: damage,
             hit: hit,

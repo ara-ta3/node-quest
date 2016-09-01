@@ -10,10 +10,13 @@ publish: install build
 	npm publish
 
 test: install
-	npm run test
+	npm run --silent test
 
 test-watch: install
 	npm run test-watch
+
+flow:
+	npm run --silent flow
 
 watch-test: install
 	./node_modules/.bin/mocha --compilers js:babel-register  --recursive ./test/ --use_strict --watch

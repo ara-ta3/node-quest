@@ -1,0 +1,6 @@
+// @flow
+export type UserAttackResult = {
+    critical: bool;
+    value: number;
+    hit: bool;
+}

@@ -1,23 +1,34 @@
+// @flow
+
 import {EventEmitter2 as EventEmitter } from "eventemitter2"
-const User      = require(`${__dirname}/game/model/User.js`);
-const Status    = require(`${__dirname}/game/model/Status.js`);
-const Equipment = require(`${__dirname}/game/model/Equipment.js`);
-const Weapon    = require(`${__dirname}/game/model/Weapon.js`);
-const Parameter = require(`${__dirname}/game/model/Parameter.js`);
-const HitRate   = require(`${__dirname}/game/model/HitRate.js`);
-const Spell     = require(`${__dirname}/game/model/Spell.js`);
-const Effect    = require(`${__dirname}/game/model/Effect.js`);
-const HitPoint  = require(`${__dirname}/game/model/HitPoint.js`);
-const Critical  = require(`${__dirname}/game/model/Critical.js`);
-const UserStates= require(`${__dirname}/game/state/User.js`);
-const MagicPoint    = require(`${__dirname}/game/model/MagicPoint.js`);
-const STATUS_VALUES = require(`${__dirname}/game/constant/Status.js`);
+import User from "./game/model/User"
+import Status from "./game/model/Status"
+import Equipment from "./game/model/Equipment"
+import Weapon from "./game/model/Weapon"
+import Parameter from "./game/model/Parameter"
+import HitRate from "./game/model/HitRate"
+import Spell from "./game/model/Spell"
+import Effect from "./game/model/Effect"
+import HitPoint from "./game/model/HitPoint"
+import Critical from "./game/model/Critical"
+import UserStates from "./game/state/User"
+import MagicPoint from "./game/model/MagicPoint"
+import STATUS_VALUES from "./game/constant/Status"
 import Job from "./game/model/Job"
 import Feedback from "./game/model/effect/Feedback"
 import FeedbackResult from "./game/model/effect/FeedbackResult"
 
 class Game extends EventEmitter {
-    constructor(minHitPoint, maxHitPoint, minMagicPoint, maxMagicPoint) {
+    users: Array<User>
+    minHitPoint: number
+    maxHitPoint: number
+    minMagicPoint: number
+    maxMagicPoint: number 
+    constructor(
+        minHitPoint: number, 
+        maxHitPoint: number, 
+        minMagicPoint:number, 
+        maxMagicPoint: number) {
         super();
         this.users = [];
         this.minHitPoint = isNaN(minHitPoint) ? 0 : minHitPoint;
@@ -26,11 +37,11 @@ class Game extends EventEmitter {
         this.maxMagicPoint = isNaN(maxMagicPoint) ? Infinity : maxMagicPoint;
     };
 
-    setUsers(users) {
+    setUsers(users: Array<User>): void {
         this.users = users;
     }
 
-    findUser(name) {
+    findUser(name: string): ?User {
         const targets = this.users.filter((u) => u.name === name);
         return targets.length === 0 ? null : targets.pop();
     };

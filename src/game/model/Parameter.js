@@ -1,12 +1,23 @@
+// @flow
+
 class Parameter {
-    constructor(mindPower = 0 , mindStability = 0, attackPower = 0, skillPoint = 0) {
+    mindPower: number
+    mindStability: number
+    attackPower: number
+    skillPoint: number
+    constructor(
+        mindPower: number = 0,
+        mindStability: number = 0,
+        attackPower: number = 0,
+        skillPoint: number = 0
+    ) {
         this.attackPower    = attackPower;
         this.skillPoint     = skillPoint;
         this.mindPower      = mindPower;
         this.mindStability  = mindStability;
     }
 
-    plus(parameterAdjust) {
+    plus(parameterAdjust: Parameter):Parameter {
         // TODO should be separated classes. Parameter and ParameterAdjust
         return new Parameter(
                 Math.max(this.mindPower + parameterAdjust.mindPower, 0),

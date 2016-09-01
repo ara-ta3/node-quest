@@ -1,0 +1,13 @@
+// @flow
+import {Effect} from "../game/model/Effect"
+
+export type SpellEffectResult = {
+    effect: Effect;
+    attack: DamageResult|EffectEmpty;
+    cure: DamageResult|EffectEmpty;
+    mindAttack: DamageResult|EffectEmpty;
+    mindCure: DamageResult|EffectEmpty;
+    status: StatusResult|EffectEmpty;
+}
+
+
