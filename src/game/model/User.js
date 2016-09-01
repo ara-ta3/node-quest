@@ -1,28 +1,41 @@
+// @flow
 import {EventEmitter2 as EventEmitter } from "eventemitter2"
-const Status        = require(__dirname + "/Status.js");
-const Parameter     = require(__dirname + "/Parameter.js");
-const Point         = require(__dirname + "/Point.js");
-const HitPoint      = require(__dirname + "/HitPoint.js");
-const MagicPoint    = require(__dirname + "/MagicPoint.js");
-const STATUS_VALUES = require(`${__dirname}/../constant/Status.js`);
-const UserState     = require(__dirname + "/../state/User.js");
+import Status from "./Status"
+import Parameter from "./Parameter"
+import Point from "./Point"
+import HitPoint from "./HitPoint"
+import MagicPoint from "./MagicPoint"
 import Job from "./Job";
+import Spell from "./Spell"
+import Equipment from "./Equipment"
+const UserState = require("../state/User")
+const STATUS_VALUES = require("../constant/Status")
 
-function findSpell(spellName, spells) {
+function findSpell(spellName: string, spells: Array<Spell>) {
     return spells.filter((s) => s.name === spellName).pop() || null;
 }
 
 class User extends EventEmitter {
+    id: number|string
+    name: string
+    hitPoint: HitPoint
+    magicPoint: MagicPoint
+    equipment: Equipment
+    defaultParameter: Parameter
+    parameter: Parameter
+    spells: Array<Spell>
+    status: Status
+    job: ?Job
     constructor(
-            id,
-            name,
-            hp,
-            mp,
-            equipment,
-            parameter = new Parameter(),
-            spells = [],
-            status = new Status(),
-            job = null
+            id: number|string,
+            name: string,
+            hp: HitPoint,
+            mp: MagicPoint,
+            equipment: Equipment,
+            parameter: Parameter = new Parameter(),
+            spells: Array<Spell> = [],
+            status: Status = new Status(),
+            job: ?Job = null
             ) {
         super();
         this.id = id;
@@ -47,7 +60,7 @@ class User extends EventEmitter {
         });
     };
 
-    attack(target) {
+    attack(target: User) {
         if(this.isDead()) {
             return UserState.ActorDead;
         } else if(target.isDead()) {
@@ -60,7 +73,7 @@ class User extends EventEmitter {
         return result;
     };
 
-    cast(spellName, target) {
+    cast(spellName: string, target: User) {
         const spell = findSpell(spellName, this.getLearnedSpells())
         if (this.isDead()) {
             return UserState.ActorDead;
@@ -72,14 +85,15 @@ class User extends EventEmitter {
 
         this.magicPoint = spell.cast(this.magicPoint);
         const result = spell.effectTo(target)(this.parameter);
-        if (typeof result === 'symbol') {
+        const resultType = typeof result;
+        if (resultType === 'symbol') {
             return result;
         }
         const feedbackResults = result.feedbacks.map((f) => f(this));
         return User.actResult(this, target, null, result, feedbackResults);
     }
 
-    damaged(x) {
+    damaged(x: number) {
         this.hitPoint.change(this.hitPoint.current - x);
         return {
             target: this,
@@ -87,7 +101,7 @@ class User extends EventEmitter {
         };
     };
 
-    cured(x) {
+    cured(x: number) {
         this.hitPoint.change(this.hitPoint.current + x);
         return {
             target: this,
@@ -95,7 +109,7 @@ class User extends EventEmitter {
         };
     };
 
-    mindDamaged(x) {
+    mindDamaged(x: number) {
         this.magicPoint.change(this.magicPoint.current - x);
         return {
             target: this,
@@ -103,7 +117,7 @@ class User extends EventEmitter {
         };
     }
 
-    mindCured(x) {
+    mindCured(x: number) {
         this.magicPoint.change(this.magicPoint.current + x);
         return {
             target: this,
@@ -111,22 +125,28 @@ class User extends EventEmitter {
         };
     }
 
-    isDead() {
+    isDead(): bool {
         return this.status.isDead();
     };
 
-    changeJob(job) {
+    changeJob(job: ?Job): void {
         if ( job ) {
             this.job = job;
             this.parameter = this.defaultParameter.plus(job.parameterAdjust);
         }
     }
 
-    getLearnedSpells() {
+    getLearnedSpells(): Array<Spell> {
         return this.job ? this.spells.concat(this.job.spells) : this.spells;
     }
 
-    static actResult(actor, target, attack, effects, feedbacks) {
+    static actResult(
+        actor: User, 
+        target: User, 
+        attack: ?UserAttackResult,
+        effects: ?Array<Effect>,
+        feedbacks: ?Array<Feedback>
+    ): UserActionResult  {
         return {
             actor: actor,
             target: target,

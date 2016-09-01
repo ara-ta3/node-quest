@@ -1,7 +1,12 @@
+// @flow
+
+import Weapon from "./Weapon"
+
 class Equipment {
-    constructor(weapon) {
-        this.weapon = weapon;
-    }
+  weapon: Weapon
+  constructor(weapon: Weapon) {
+    this.weapon = weapon;
+  }
 }
 
 module.exports = Equipment;

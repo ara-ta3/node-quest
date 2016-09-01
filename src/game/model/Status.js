@@ -1,13 +1,15 @@
-const EventEmitter = require('eventemitter2').EventEmitter2;
-const STATUS_VALUES = require(`${__dirname}/../constant/Status.js`);
+// @flow
+import {EventEmitter2 as EventEmitter } from "eventemitter2"
+import STATUS_VALUES from "../constant/Status"
 
 class Status extends EventEmitter {
-    constructor(currents) {
+    currents: Array<StatusType>
+    constructor(currents: ?Array<StatusType>) {
         super();
         this.currents = currents || [];
     }
 
-    clear(targetStatus) {
+    clear(targetStatus: StatusType): void {
         this.emit("removed", {
             status: this,
             target: targetStatus
@@ -15,19 +17,19 @@ class Status extends EventEmitter {
         this.currents = this.currents.filter((s) => s !== targetStatus);
     }
 
-    add(targetStatus) {
+    add(targetStatus: StatusType): void {
         this.currents = this.currents.concat([targetStatus]);
     }
 
-    dead() {
+    dead(): void {
         this.add(STATUS_VALUES.DEAD);
     }
 
-    has(status) {
+    has(status: StatusType): bool {
         return this.currents.indexOf(status) !== -1;
     }
 
-    isDead() {
+    isDead(): bool {
         return this.has(STATUS_VALUES.DEAD)
     }
 }

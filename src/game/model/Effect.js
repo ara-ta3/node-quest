@@ -1,26 +1,32 @@
-const Point  = require(__dirname + "/Point.js");
-const UserState = require(__dirname + "/../state/User.js");
+// @flow
+import Point from "./Point";
+import UserState from "../state/User";
 import EffectFeedback from "./effect/Feedback";
+import User from "./User";
+import Feedback from "./effect/Feedback"
+import Parameter from "./Parameter"
 
-function identify(x) {
+function identify<T> (x: T): T {
     return x;
 }
 
 class Effect {
-    to(user) {
+    to(user: User) {
         throw new Error("not implemented error");
     }
 }
 
 class AttackEffect extends Effect {
-    constructor(defaultPower, feedbacks) {
+    defaultPower: number
+    feedbacks: Array<Feedback>
+    constructor(defaultPower: number, feedbacks: Array<Feedback>) {
         super();
         this.defaultPower = defaultPower;
         this.feedbacks = (feedbacks ? (Array.isArray(feedbacks) ? feedbacks : [feedbacks]) : []);
     }
 
-    to(targetUser) {
-        return (actorParameter) => {
+    to(targetUser: User): (p: Parameter) => SpellEffectResult {
+        return (actorParameter: Parameter) => {
             if(targetUser.isDead()) {
                 return UserState.TargetDead;
             }
@@ -32,14 +38,16 @@ class AttackEffect extends Effect {
 }
 
 class CureEffect extends Effect {
-    constructor(defaultPower, feedbacks) {
+    defaultPower: number
+    feedbacks: Array<Feedback>
+    constructor(defaultPower: number, feedbacks: Array<Feedback>) {
         super();
         this.defaultPower = defaultPower;
         this.feedbacks = (feedbacks ? (Array.isArray(feedbacks) ? feedbacks : [feedbacks]) : []);
     }
 
-    to(targetUser) {
-        return (actorParameter) => {
+    to(targetUser: User): (p: Parameter) => SpellEffectResult {
+        return (actorParameter: Parameter) => {
             if(targetUser.isDead()) {
                 return UserState.TargetDead;
             }
@@ -51,14 +59,16 @@ class CureEffect extends Effect {
 }
 
 class StatusEffect extends Effect {
-    constructor(targetStatus, feedbacks) {
+    targetStatus: StatusType
+    feedbacks: Array<Feedback>
+    constructor(targetStatus: StatusType, feedbacks: Array<Feedback>) {
         super();
         this.targetStatus = targetStatus;
         this.feedbacks = (feedbacks ? (Array.isArray(feedbacks) ? feedbacks : [feedbacks]) : []);
     }
 
-    to(targetUser) {
-        return (actorParameter) => {
+    to(targetUser: User): (p: Parameter) => SpellEffectResult {
+        return (actorParameter: Parameter) => {
             const effective = targetUser.status.has(this.targetStatus);
             targetUser.status.clear(this.targetStatus);
             return EffectResult.factory(this, null, null, null, null, {
@@ -70,15 +80,18 @@ class StatusEffect extends Effect {
 }
 
 class MindAttackEffect extends Effect {
-    constructor(defaultPower, feedbacks, damageAdjust) {
+    defaultPower: number
+    feedbacks: Array<Feedback>
+    damageAdjust: (x: number) => number
+    constructor(defaultPower: number, feedbacks: Array<Feedback>, damageAdjust:(x: number) => number) {
         super();
         this.defaultPower = defaultPower;
         this.feedbacks = (feedbacks ? (Array.isArray(feedbacks) ? feedbacks : [feedbacks]) : []);
         this.damageAdjust = damageAdjust || identify;
     }
 
-    to(targetUser) {
-        return (actorParameter) => {
+    to(targetUser: User): (p: Parameter) => SpellEffectResult {
+        return (actorParameter: Parameter) => {
             if(targetUser.isDead()) {
                 return UserState.TargetDead;
             }
@@ -90,15 +103,18 @@ class MindAttackEffect extends Effect {
 }
 
 class MindCureEffect extends Effect {
-    constructor(defaultPower, feedbacks, damageAdjust) {
+    defaultPower: number
+    feedbacks: Array<Feedback>
+    damageAdjust: (x: number) => number
+    constructor(defaultPower: number, feedbacks: Array<Feedback>, damageAdjust:(x: number) => number) {
         super();
         this.defaultPower = defaultPower;
         this.feedbacks = (feedbacks ? (Array.isArray(feedbacks) ? feedbacks : [feedbacks]) : []);
         this.damageAdjust = damageAdjust || identify;
     }
 
-    to(targetUser) {
-        return (actorParameter) => {
+    to(targetUser: User): (p: Parameter) => SpellEffectResult {
+        return (actorParameter: Parameter) => {
             if(targetUser.isDead()) {
                 return UserState.TargetDead;
             }
@@ -111,7 +127,14 @@ class MindCureEffect extends Effect {
 
 
 class EffectResult {
-    static factory(effect, attack, cure, mindAttack, mindCure, status) {
+    static factory(
+        effect: Effect, 
+        attack: ?number, 
+        cure: ?number, 
+        mindAttack: ?number, 
+        mindCure: ?number, 
+        status: ?StatusResult
+    ): SpellEffectResult {
         return {
             effect: effect,
             attack: attack ? {value: attack} : {},
@@ -125,6 +148,7 @@ class EffectResult {
 }
 
 module.exports = {
+    Effect: Effect,
     AttackEffect: AttackEffect,
     CureEffect: CureEffect,
     StatusEffect: StatusEffect,
